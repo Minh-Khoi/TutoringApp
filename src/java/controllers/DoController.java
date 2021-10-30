@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
+import models.Fee;
 import models.Student;
 import models.Teacher;
 import org.json.JSONArray;
@@ -268,18 +269,18 @@ public class DoController {
             if(teacher.getIsAdmin()==1 || classIns.getTeacherID() == teacher.getTeacherID()){
                 List studentsOnClass = new ArrayList<>(classIns.getListOfStudentCodes());
 //                System.out.println(studentsOnClass.size() ); System.out.println("dbrr");
-                if(!studentsOnClass.contains(studentCode)){
-                    if(action.equals("add")){
-                        studentsOnClass.add(studentCode);
-                        classIns.setListOfStudentCodes(studentsOnClass);
-                        classIns.update();
-                    } else {
-                        studentsOnClass.remove(studentsOnClass.indexOf(studentCode));
-                        classIns.setListOfStudentCodes(studentsOnClass);
-                        classIns.update();
-                    }
+                if(!studentsOnClass.contains(studentCode) && action.equals("add")){
+                    studentsOnClass.add(studentCode);
+                    classIns.setListOfStudentCodes(studentsOnClass);
+                    classIns.update();
+                } else if(studentsOnClass.contains(studentCode) && action.equals("add")){
+                    return "ERROR: This students has joined in this class";
+                } else if(studentsOnClass.contains(studentCode) && action.equals("restore")){
+                    studentsOnClass.remove(studentsOnClass.indexOf(studentCode));
+                    classIns.setListOfStudentCodes(studentsOnClass);
+                    classIns.update();
                 } else {
-                    return "ERROR: This students has joined this class";
+                    return "ERROR: This students has not existed  in this class";
                 }
             } else {
                 return "ERROR: This feature only work with the teachers who is admin, or who is in charged with this class";
