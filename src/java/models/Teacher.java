@@ -233,7 +233,7 @@ public class Teacher extends JdbcDaoSupport{
                                             (String) map.get("Specialize"), (String) map.get("Email"), (String) map.get("Password"));
             returnedList.add(teacher);
         }
-        return returnedList.get(0);
+        return (returnedList.isEmpty()) ? null : returnedList.get(0);
     }
 
     public List<Teacher> readByCol(String col, Object value){

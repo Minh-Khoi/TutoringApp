@@ -234,7 +234,7 @@ public class Student extends JdbcDaoSupport{
             stu.setStudentCode((String) map.get("StudentCode"));
             returnedList.add(stu);
         }
-        return returnedList.get(0);
+        return (returnedList.isEmpty()) ? null : returnedList.get(0);
     }
     
     

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import models.Fee;
+import models.Remuneration;
 import models.Student;
 import models.Teacher;
 import org.json.JSONArray;
@@ -45,7 +46,7 @@ public class DoController {
         List<Teacher> teachers = new Teacher().readByCol("email", teacher.getEmail());
         if(teachers.size()>0 && teachers.get(0).getPassword().equals(teacher.getPassword())){
             Teacher teacherFromDB = teachers.get(0);
-            System.out.println(teacherFromDB);
+            //System.out.println(teacherFromDB);
             modMap.put("usingTeacher", teacherFromDB);
             List<Student> studentsList = new Student().readAll();
             modMap.put("studentsList", studentsList);
@@ -65,7 +66,7 @@ public class DoController {
     @ResponseBody
     public String doChangeStudent(@RequestBody String jsonString, @RequestHeader(value = "Teacher-Token") String teacherToken,
                                                             @PathVariable String formAction, ModelMap modMap){
-        System.out.println(jsonString);
+        //System.out.println(jsonString);
         if (!this.testValidTeacherToken(teacherToken)){
             return "ERROR: This feature only work with the teachers, who have permission ";
         }
@@ -75,13 +76,13 @@ public class DoController {
             if("update".equals(formAction)){
                 // the method stud.setFullname() has changed the student code. It has a seperated updating method
                 stud.setFullname(studentJSON.getString("fullname"));
-                System.out.println(stud.updateFullname());
+                //System.out.println(stud.updateFullname());
                 // Then update another fields.
                 stud.setBirthday(studentJSON.getString("birthday"));
                 stud.setPhone(studentJSON.getString("phone"));
                 stud.setEmail(studentJSON.getString("email"));
                 stud.setGender(studentJSON.getInt("gender"));
-                System.out.println(stud.update());
+                //System.out.println(stud.update());
                 return "The student " + stud.getFullname()+ ": " + stud.getStudentCode() +" "+ formAction+ " successfully";                
             } else if("delete".equals(formAction)) {
                 stud.delete();
@@ -106,7 +107,7 @@ public class DoController {
             return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
         } else {
             studentOnForm.setJoinTime(String.valueOf(new Date().getTime()));
-            System.out.println(studentOnForm.create());
+            //System.out.println(studentOnForm.create());
         }
         return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
     }
@@ -128,7 +129,7 @@ public class DoController {
                 modMap.put("mesage", "This email has been used by another teacher");
             } else {
                 teacherOnForm.setPassword(teacherOnForm.getFullname());
-                System.out.println(teacherOnForm.create());
+                //System.out.println(teacherOnForm.create());
             }
         }
         return new GoController().gotoTeacher(usingTeacher.getToken(), modMap, request);
@@ -140,7 +141,7 @@ public class DoController {
                                                         @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
                                                                                 ModelMap modMap, HttpServletRequest request){
         JSONObject jsonObj = new JSONObject(jsonStr);
-        System.out.println(jsonStr);
+        //System.out.println(jsonStr);
         if (!this.testValidTeacherToken(usingTeacherToken)){
             return "ERROR: This feature only work with the teachers, who have permission ";
         } 
@@ -151,12 +152,12 @@ public class DoController {
                 teacher.setSpecialize(jsonObj.getString("specialize"));
                 teacher.setPhone(jsonObj.getString("phone"));
                 teacher.setEmail(jsonObj.getString("email"));
-                System.out.println(teacher.update());
+                //System.out.println(teacher.update());
             } else if(formAction.equals("delete")) {
                 List<models.Class> listClassOfThisTeacher = new models.Class().readByCol("TeacherID", teacher.getTeacherID());
-                System.out.println(listClassOfThisTeacher); System.out.println("mrrt");
+                //System.out.println(listClassOfThisTeacher); //System.out.println("mrrt");
                 if(listClassOfThisTeacher.size()==0){
-//                    teacher.delete();
+                    teacher.delete();
                 } else{
                     List<Integer> listClassIDofTeacher = new ArrayList<>();
                     for(models.Class cla : listClassOfThisTeacher){
@@ -182,7 +183,7 @@ public class DoController {
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
         } else {
             List classes = new models.Class().readByCol("Status", status);
-            System.out.println(new JSONArray(classes.toString()).toString(4));
+            //System.out.println(new JSONArray(classes.toString()).toString(4));
             return classes.toString();
         }
     }
@@ -197,6 +198,15 @@ public class DoController {
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
         } else {
             models.Class classInstance = new models.Class().readByID(classID);
+            // Check archived
+            List<Remuneration> remusList = new Remuneration().readByCol("ClassID", classID);
+            List<Fee> fees = new Fee().readByCol("ClassID", classID);
+            if (fees.size()>0 ){
+                JSONObject classJSONinstance = new JSONObject(classInstance.toString());
+                classJSONinstance.put("IsArchived", 1);
+                return classJSONinstance.toString();
+            }
+            // end checking archived
             return classInstance.toString();
         }
     }
@@ -215,9 +225,11 @@ public class DoController {
             List<Student> returnedList = new ArrayList<>();
             for(String code : listOfStudentCodes){
                 Student stu = new Student().readByCode(code);
-                returnedList.add(stu);
+                if(!Objects.isNull(stu)){
+                    returnedList.add(stu);
+                }
             }
-            System.out.println(returnedList.toString());
+            //System.out.println(returnedList.toString());
             return returnedList.toString();
         }
     }
@@ -239,7 +251,7 @@ public class DoController {
                     if(studentsOnClass.contains(studentCode)){
                         studentsOnClass.remove(studentsOnClass.indexOf(studentCode));
                         classIns.setListOfStudentCodes(studentsOnClass);
-                        System.out.println(classIns.update());
+                        //System.out.println(classIns.update());
                     }
                 } else {
                     if(!studentsOnClass.contains(studentCode)){
@@ -268,7 +280,7 @@ public class DoController {
             models.Class classIns = new models.Class().readByID(classID);
             if(teacher.getIsAdmin()==1 || classIns.getTeacherID() == teacher.getTeacherID()){
                 List studentsOnClass = new ArrayList<>(classIns.getListOfStudentCodes());
-//                System.out.println(studentsOnClass.size() ); System.out.println("dbrr");
+//                //System.out.println(studentsOnClass.size() ); //System.out.println("dbrr");
                 if(!studentsOnClass.contains(studentCode) && action.equals("add")){
                     studentsOnClass.add(studentCode);
                     classIns.setListOfStudentCodes(studentsOnClass);
@@ -294,7 +306,7 @@ public class DoController {
                                             @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                             ModelMap modMap, HttpServletRequest request){
         Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-//        System.out.println(createdClass + "---" + createdClass.getTeacherID());
+//        //System.out.println(createdClass + "---" + createdClass.getTeacherID());
         if(Objects.isNull(teacher) ||  teacher.getIsAdmin()!=1  ){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
@@ -316,7 +328,7 @@ public class DoController {
         if(Objects.isNull(teacher) || teacher.getIsAdmin()!=1 && teacher.getTeacherID() != updatedClass.getTeacherID() ){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
-            System.out.println(updatedClass);
+            //System.out.println(updatedClass);
             if(updatedClass.update()== 0){
                 modMap.put("message", "ERROR: Class update failed!! Check the class info again");
             } else {
@@ -337,12 +349,31 @@ public class DoController {
         if(Objects.isNull(teacher) || teacher.getIsAdmin()!=1 && teacher.getTeacherID() != deletedClass.getTeacherID() ){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
-            System.out.println(deletedClass);
+            //System.out.println(deletedClass);
             if(deletedClass.delete()== 0){
                 modMap.put("message", "ERROR: Class delete failed!! Check the class info again");
             } 
         }
         return new GoController().gotoClasses(usingTeacherToken, modMap, request);        
+    }
+    
+    @RequestMapping(value = "/createfeeforclass/{classID}", method = RequestMethod.POST)
+    public String createFeeForClass(@PathVariable(value = "classID") int classID, 
+                                        @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
+                                        ModelMap modMap, HttpServletRequest request){
+        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
+        models.Class processedlass = new models.Class().readByID(classID);
+        if(Objects.isNull(teacher) || teacher.getIsAdmin()!=1 && teacher.getTeacherID() != processedlass.getTeacherID() ){
+            modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
+        } else {
+            List<String> studentCodesInClass = processedlass.getListOfStudentCodes();
+            for(String code : studentCodesInClass){
+                Fee fee = new Fee(-1, classID, 0, code);
+                fee.create();
+                System.out.println("created new fee: student " + code + " on class: " + classID);
+            }
+        }
+        return new GoController().gotoClasses(usingTeacherToken, modMap, request);     
     }
     //</editor-fold>
         
@@ -354,7 +385,7 @@ public class DoController {
      */
     private boolean testValidTeacherToken(String token){
         List<Teacher> teachers = new Teacher().readByCol("Token", token);
-//        System.out.println(teachers.size());
+//        //System.out.println(teachers.size());
         return teachers.size()>0;
     }
     

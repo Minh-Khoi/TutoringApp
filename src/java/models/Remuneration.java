@@ -149,7 +149,7 @@ public class Remuneration extends JdbcDaoSupport{
                                                                     (int) map.get("ClassID"), (int) map.get("IsDisbursed"));
             returnedList.add(rem);
         }
-        return returnedList.get(0);
+        return (returnedList.isEmpty()) ? null : returnedList.get(0);
     }
     
     public int findTheLastIdentityID(){

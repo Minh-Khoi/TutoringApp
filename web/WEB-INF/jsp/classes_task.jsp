@@ -8,7 +8,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Tutoring Web App</title>
+        <title>Classes 's Task. Tutoring Web App</title>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
         <!-- Google Fonts -->
@@ -314,16 +314,17 @@
                         /**
                         * Handle the event onclick of 
                         */
-                        function loadClassInfo(event){
+                        async function loadClassInfo(event){
                             activateUpdating(false);
-                            loadStudentList();
-                            loadBasicInfoOfClass();
+                            let classIsAchived = await loadBasicInfoOfClass();
+                            console.log(classIsAchived);
+                            loadStudentList(classIsAchived);
                         }
                         
                         /** 
                          * Function load Students List
                          */
-                        function loadStudentList(){
+                        function loadStudentList(classIsArchived = false){
                             let classID = $("#find-class").val();
                             fetch("${pageContext.servletContext.contextPath}/loadstudentsofclass/"+classID+".html",{
                                 method:"GET",
@@ -333,7 +334,7 @@
                                 }
                             }).then(response => response.text())
                             .then(result => {
-                                if(result.indexOf("ERROR") != -1){
+                                if(result.indexOf("ERROR") !== -1){
                                     alert(result);
                                 }
                                 $("table#dtBasicExample tbody").html("");
@@ -353,22 +354,24 @@
                                     newCell.html(detailsStudent["Email"]);
                                     newRow.append(newCell.clone());
                                     // Add the button for (delete / restore) on the last cell
-                                    let lastCellDelButton = 
+                                    if(!classIsArchived){
+                                        let lastCellDelButton = 
                                             $("<button></button>").addClass("btn btn-danger").html("Delete")
-                                            .on("click", (event)=> {
-                                                $(event.target).slideToggle();
-                                                $(event.target.nextSibling).slideToggle();
-                                                deleteOrRestore("delete", detailsStudent["StudentCode"]);
-                                            });
-                                    let lastCellRestoreButton = 
+                                                .on("click", (event)=> {
+                                                    $(event.target).slideToggle();
+                                                    $(event.target.nextSibling).slideToggle();
+                                                    deleteOrRestore("delete", detailsStudent["StudentCode"]);
+                                                });
+                                        let lastCellRestoreButton = 
                                             $("<button></button>").addClass("btn btn-secondary").html("Restore").css("display", "none")
-                                            .on("click", (event)=> {
-                                                $(event.target).slideToggle();
-                                                $(event.target.previousSibling).slideToggle();
-                                                deleteOrRestore("restore", detailsStudent["StudentCode"]);
-                                            });;
-                                    newCell.html(lastCellDelButton);
-                                    newCell.append(lastCellRestoreButton);
+                                                .on("click", (event)=> {
+                                                    $(event.target).slideToggle();
+                                                    $(event.target.previousSibling).slideToggle();
+                                                    deleteOrRestore("restore", detailsStudent["StudentCode"]);
+                                                });;
+                                        newCell.html(lastCellDelButton);
+                                        newCell.append(lastCellRestoreButton);
+                                    }
                                     newRow.append(newCell);
                                     // end adding button
                                     $("table#dtBasicExample tbody").append(newRow);
@@ -377,9 +380,10 @@
                         }
                         // End Function
 
-                        function loadBasicInfoOfClass(){
+                        async function loadBasicInfoOfClass(){
+                            let classIsArchived = false;
                             let classID = $("#find-class").val();
-                            fetch("${pageContext.servletContext.contextPath}/loadbasicinfoofclass/"+classID+".html",{
+                            await fetch("${pageContext.servletContext.contextPath}/loadbasicinfoofclass/"+classID+".html",{
                                 method:"GET",
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -387,7 +391,7 @@
                                 }
                             }).then(response => response.text())
                             .then(result => {
-                                if(result.indexOf("ERROR") != -1){
+                                if(result.indexOf("ERROR") !== -1){
                                     alert(result);
                                 }
                                 let infoOfClass = JSON.parse(result);
@@ -397,17 +401,31 @@
                                 $("form#frm input[name='fee']").val(infoOfClass["Fee"]);
                                 $("form#frm input[name='remuneration']").val(infoOfClass["Remuneration"]);
                                 $("form#frm input[name='teacherID']").val(infoOfClass["TeacherID"]);
+                                // Script for "Archive this class" button
+                                if(infoOfClass["IsArchived"]===1){
+                                    $("button.archiveClass").html("THis class was archived").on("click", ()=>{/*do NOTHING*/});
+                                    $("button[data-target='#modal_all_students_list']").css("display", "none");
+                                    classIsArchived = true;
+                                } else {
+                                    $("button.archiveClass").html("Archive this class")
+                                                        .on("click", (event)=>{
+                                                                archiveClass(event);
+                                                        });
+                                    $("button[data-target='#modal_all_students_list']").css("display", "");
+                                }
+                                // End Script for "Archive this class" button
                             });
+                            
+                            return classIsArchived;
                         }
                     </script>
                 </select>
                 
                 <h4>Student 's list</h4>
+                <!-- Modal and Button add student to class-->
                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#modal_all_students_list">
                     Add Students to Class
                 </button>
-
-                <!-- Modal -->
                 <div class="modal fade" id="modal_all_students_list" tabindex="-1" role="dialog" 
                                 aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                     <div class="modal-dialog" role="document" style="max-width: 70vw">
@@ -515,7 +533,36 @@
                         loadStudentList();
                     })
                 </script>
-                <!--End Modal-->
+                <!--End Modal adding student to class-->
+                <!--Button and script archive the class-->
+                <button class="btn btn-warning archiveClass" >
+                    Archive this class
+                </button>
+                <script>
+                    function archiveClass(event){
+                        let classID = $("#find-class").val();
+                        fetch("${pageContext.servletContext.contextPath}/createfeeforclass/"+classID+".html", {
+                            body: classID , method:"POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "Teacher-Token" : "${usingTeacher.token}"
+                            }
+                        }).then((response) => response.text())
+                        .then((result)=> {
+                            if (result.indexOf("ERROR") ===-1){
+                                alert(result);
+                            } else {
+                                loadClassInfo(event);
+                            }
+                        });
+                    }
+                </script>
+                <!--End archive the class-->
+                <!--Button and script inactive class-->
+                <button class="btn btn-outline-danger inactiveClass" >
+                    Inactive this class
+                </button>
+                <!--End inactive class-->
                 <!--Table-->
                 <table id="dtBasicExample" class="table table-striped table-bordered table-sm mt-2 mb-4" cellspacing="0" width="100%">
                     <thead>

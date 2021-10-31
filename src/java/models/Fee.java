@@ -145,7 +145,7 @@ public class Fee extends JdbcDaoSupport{
             Fee fee = new Fee((int) map.get("ID"), (int) map.get("ClassID"), (int) map.get("IsPaid"), (String) map.get("StudentCode"));
             returnedList.add(fee);
         }
-        return returnedList.get(0);
+        return (returnedList.isEmpty()) ? null : returnedList.get(0);
     }
     
     public int findTheLastIdentityID(){

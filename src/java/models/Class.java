@@ -207,7 +207,7 @@ public class Class extends JdbcDaoSupport{
             cl.setStatus((int) map.get("Status"));
             returnedList.add(cl);
         }
-        return returnedList.get(0);
+        return (returnedList.isEmpty()) ? null : returnedList.get(0);
     }
     
     
