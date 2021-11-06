@@ -204,6 +204,7 @@ public class DoController {
             if (fees.size()>0 ){
                 JSONObject classJSONinstance = new JSONObject(classInstance.toString());
                 classJSONinstance.put("IsArchived", 1);
+                //System.out.println(classJSONinstance.toString(4));
                 return classJSONinstance.toString();
             }
             // end checking archived
@@ -306,7 +307,7 @@ public class DoController {
                                             @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                             ModelMap modMap, HttpServletRequest request){
         Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-//        //System.out.println(createdClass + "---" + createdClass.getTeacherID());
+        //System.out.println(createdClass + "---" + createdClass.getTeacherID());
         if(Objects.isNull(teacher) ||  teacher.getIsAdmin()!=1  ){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {

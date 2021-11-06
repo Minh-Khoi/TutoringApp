@@ -82,10 +82,13 @@ public class Class extends JdbcDaoSupport{
         List<String> returnedList = new ArrayList<>();
         for(int i=0; i< this.listOfStudentCodes.size() ; i++){
             if(this.listOfStudentCodes.get(i).length() > 0){
-                returnedList.add(this.listOfStudentCodes.get(i).trim());
+                Student student = new Student().readByCode(this.listOfStudentCodes.get(i).trim());
+                if(!Objects.isNull(student)) {
+                    returnedList.add(this.listOfStudentCodes.get(i).trim());
+                }
             } 
         }
-        System.out.println(returnedList); System.out.println("googo");
+        //System.out.println(returnedList); System.out.println("googo");
         return returnedList;
     }
 

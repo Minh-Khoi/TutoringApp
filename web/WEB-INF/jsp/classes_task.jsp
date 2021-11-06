@@ -83,8 +83,13 @@
                         <label class="input-group-prepend mb-0" for="remuneration">
                             <span class="input-group-text">Remuneration</span>
                         </label>
-                        <form:input type="number" class="form-control" step=".01" disabled="true"
-                            path="remuneration" id="remuneration" aria-label="Amount (to the nearest dollar)"/>
+                        <form:input type="number" class="form-control" step=".01" disabled="true" list="remunerationSuggest"
+                                    path="remuneration" id="remuneration" aria-label="Amount (to the nearest dollar)"/>
+                        <datalist id="remunerationSuggest">
+                            <option>
+                                30% of all fees of class: <span></span> 
+                            </option>
+                        </datalist>
                     </div>
                     <div class="input-group mb-3">
                         <label class="input-group-prepend mb-0" for="teacherID">
@@ -400,6 +405,10 @@
                                 $("form#frm input[name='subject']").val(infoOfClass["Subject"]);
                                 $("form#frm input[name='fee']").val(infoOfClass["Fee"]);
                                 $("form#frm input[name='remuneration']").val(infoOfClass["Remuneration"]);
+                                $("form#frm datalist#remunerationSuggest option").val(
+                                        infoOfClass["ListOfStudents"].length * infoOfClass["Fee"] * 0.3
+                                    );
+                                console.log(infoOfClass["ListOfStudents"].length * infoOfClass["Fee"]);
                                 $("form#frm input[name='teacherID']").val(infoOfClass["TeacherID"]);
                                 // Script for "Archive this class" button
                                 if(infoOfClass["IsArchived"]===1){

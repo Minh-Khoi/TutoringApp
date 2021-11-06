@@ -65,8 +65,8 @@ public class GoController {
             modMap.put("usingTeacher", usingTeacher);
             modMap.put("classOnFormUpdate", new Class());
             modMap.put("classOnFormCreate", new Class());
-            modMap.put("classesList", new Class().readByCol("Status", 1));
             modMap.put("teachersList", new Teacher().readAll());
+            modMap.put("classesList", new Class().readByCol("Status", 1));
             modMap.put("allStudents", new Student().readAll());
             return "classes_task";
         }
