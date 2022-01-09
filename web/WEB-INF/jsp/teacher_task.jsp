@@ -8,6 +8,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--page parameters-->
+        <meta content="${usingTeacher.token}" name="usingTeacherToken"/>
+        <meta content="${message}" name="message"/>
+        <meta content="${pageContext.servletContext.contextPath}" name="pageContextPath"/>
+        <span hidden role="meta" name="teachersList">${teachersList}</span>
+        
+        <!--page parameters end-->
+        
         <title>Teacher 's tasks. Tutoring Web App</title>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -109,30 +117,30 @@
                     </a>
                 </form:form>
                 <script>
-                    function doSubmitForm(ev){
-                        if ($(".btn_reset").css("display") == "none"){
-                            return;
-                        }
-                        ev.preventDefault();
-                        let form = document.getElementById("frm");
-                        let formDatas = new FormData(form);
-                        formDatas.append("teacherID", document.querySelector(".col-sm-4 h1 > span >span").innerHTML );
-                        let formStudent = Object.fromEntries(formDatas.entries());
-                        let formAction = $("#frm .btn_submit").text();
-                        fetch("${pageContext.servletContext.contextPath}/dochangeteacher/"+formAction+".html", {
-                            body : JSON.stringify(formStudent), method:"POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                "Teacher-Token" : "${usingTeacher.token}"
-                            }
-                        }).then(resolve => resolve.text())
-                        .then(result => {
-                            if(result.indexOf("ERROR") != -1){
-                                alert(result);
-                            }
-                            console.log(result);
-                        })
-                    }
+//                    function doSubmitForm(ev){
+//                        if ($(".btn_reset").css("display") == "none"){
+//                            return;
+//                        }
+//                        ev.preventDefault();
+//                        let form = document.getElementById("frm");
+//                        let formDatas = new FormData(form);
+//                        formDatas.append("teacherID", document.querySelector(".col-sm-4 h1 > span >span").innerHTML );
+//                        let formStudent = Object.fromEntries(formDatas.entries());
+//                        let formAction = $("#frm .btn_submit").text();
+//                        fetch("${pageContext.servletContext.contextPath}/dochangeteacher/"+formAction+".html", {
+//                            body : JSON.stringify(formStudent), method:"POST",
+//                            headers: {
+//                                'Content-Type': 'application/json',
+//                                "Teacher-Token" : "${usingTeacher.token}"
+//                            }
+//                        }).then(resolve => resolve.text())
+//                        .then(result => {
+//                            if(result.indexOf("ERROR") != -1){
+//                                alert(result);
+//                            }
+//                            console.log(result);
+//                        })
+//                    }
                     
                 </script>
             </div>
@@ -211,44 +219,41 @@
                 </table>
                 <!--Script to make the DataTable work-->
                 <script type="text/javascript">
-                    $(document).ready(function () {
-                        $('#dtBasicExample').DataTable();
-                        $('.dataTables_length').addClass('bs-select');
-                    });
                     
-                    function onClicked(teacherIndex, formAction){
-                        let teachersList = ${teachersList};
-                        let teacherOnForm = teachersList[teacherIndex];
-                        console.log(teacherOnForm);
-                        // Border the form and display the reset button
-                        $("#frm").parent().addClass("border pl-4 pb-3 pt-3");
-                        $("#frm .btn_reset").css("display", "block");
-                        // Render values for input tags
-                        document.querySelector(".col-sm-4 h1 > span > span").innerHTML =  teacherOnForm["TeacherID"];
-                        document.querySelector("form#frm input[name='fullname']").value = teacherOnForm["Fullname"];
-                        document.querySelector("form#frm input[name='specialize']").value = teacherOnForm["Specialize"];
-                        document.querySelector("form#frm input[name='phone']").value = teacherOnForm["Phone"];
-                        document.querySelector("form#frm input[name='email']").value = teacherOnForm["Email"];
-                        // switch formAction
-                        if(formAction == "see"){
-                            $("#frm").parent().addClass("border-secondary").removeClass("border-warning border-danger");
-                            $("form#frm button[type='submit']").html('see').attr("disabled", true)
-                                                    .addClass("bg-secondary").removeClass("bg-danger bg-warning");
-                        } else if (formAction == "update"){
-                            $("#frm").parent().addClass("border-warning").removeClass("border-secondary border-danger");
-                            $("form#frm button[type='submit']").html('update')
-                                        .addClass("bg-warning").removeClass("bg-danger bg-secondary");
-                        } else {
-                            $("#frm").parent().addClass("border-danger").removeClass("border-warning border-secondary");
-                            $("form#frm button[type='submit']").html('delete')
-                                        .addClass("bg-danger").removeClass("bg-warning bg-secondary");
-                        }
-                    }
+//                    function onClicked(teacherIndex, formAction){
+//                        let teachersList = ${teachersList};
+//                        let teacherOnForm = teachersList[teacherIndex];
+//                        console.log(teacherOnForm);
+//                        // Border the form and display the reset button
+//                        $("#frm").parent().addClass("border pl-4 pb-3 pt-3");
+//                        $("#frm .btn_reset").css("display", "block");
+//                        // Render values for input tags
+//                        document.querySelector(".col-sm-4 h1 > span > span").innerHTML =  teacherOnForm["TeacherID"];
+//                        document.querySelector("form#frm input[name='fullname']").value = teacherOnForm["Fullname"];
+//                        document.querySelector("form#frm input[name='specialize']").value = teacherOnForm["Specialize"];
+//                        document.querySelector("form#frm input[name='phone']").value = teacherOnForm["Phone"];
+//                        document.querySelector("form#frm input[name='email']").value = teacherOnForm["Email"];
+//                        // switch formAction
+//                        if(formAction == "see"){
+//                            $("#frm").parent().addClass("border-secondary").removeClass("border-warning border-danger");
+//                            $("form#frm button[type='submit']").html('see').attr("disabled", true)
+//                                                    .addClass("bg-secondary").removeClass("bg-danger bg-warning");
+//                        } else if (formAction == "update"){
+//                            $("#frm").parent().addClass("border-warning").removeClass("border-secondary border-danger");
+//                            $("form#frm button[type='submit']").html('update')
+//                                        .addClass("bg-warning").removeClass("bg-danger bg-secondary");
+//                        } else {
+//                            $("#frm").parent().addClass("border-danger").removeClass("border-warning border-secondary");
+//                            $("form#frm button[type='submit']").html('delete')
+//                                        .addClass("bg-danger").removeClass("bg-warning bg-secondary");
+//                        }
+//                    }
                 </script>
             </div>
         </div>
         
     </body>
+    <script src="${pageContext.servletContext.contextPath}/javascript/teacher_task.js"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box
@@ -257,6 +262,11 @@
                 alert(message);
             }
         }
+        $(document).ready(function () {
+            $('#dtBasicExample').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+
     </script>
     
 </html>

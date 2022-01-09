@@ -76,13 +76,13 @@ public class DoController {
             if("update".equals(formAction)){
                 // the method stud.setFullname() has changed the student code. It has a seperated updating method
                 stud.setFullname(studentJSON.getString("fullname"));
-                //System.out.println(stud.updateFullname());
+                System.out.println(stud.updateFullname());
                 // Then update another fields.
                 stud.setBirthday(studentJSON.getString("birthday"));
                 stud.setPhone(studentJSON.getString("phone"));
                 stud.setEmail(studentJSON.getString("email"));
                 stud.setGender(studentJSON.getInt("gender"));
-                //System.out.println(stud.update());
+                System.out.println(stud.update());
                 return "The student " + stud.getFullname()+ ": " + stud.getStudentCode() +" "+ formAction+ " successfully";                
             } else if("delete".equals(formAction)) {
                 stud.delete();
@@ -101,13 +101,14 @@ public class DoController {
                                                 @ModelAttribute("teacherToken") String teacherToken,
                                                             ModelMap modMap, HttpServletRequest request){
         List<Teacher> teachers = new Teacher().readByCol("Token", teacherToken);
+        System.out.println("do create students");
         Teacher usingTeacher = teachers.get(0);
         if(teachers.size()==0){
             modMap.put("message", "ERROR: This feature only work with the teachers, who have permission");
             return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
         } else {
             studentOnForm.setJoinTime(String.valueOf(new Date().getTime()));
-            //System.out.println(studentOnForm.create());
+            System.out.println(studentOnForm.create());
         }
         return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
     }
@@ -152,7 +153,7 @@ public class DoController {
                 teacher.setSpecialize(jsonObj.getString("specialize"));
                 teacher.setPhone(jsonObj.getString("phone"));
                 teacher.setEmail(jsonObj.getString("email"));
-                //System.out.println(teacher.update());
+                System.out.println(teacher.update());
             } else if(formAction.equals("delete")) {
                 List<models.Class> listClassOfThisTeacher = new models.Class().readByCol("TeacherID", teacher.getTeacherID());
                 //System.out.println(listClassOfThisTeacher); //System.out.println("mrrt");
@@ -252,7 +253,7 @@ public class DoController {
                     if(studentsOnClass.contains(studentCode)){
                         studentsOnClass.remove(studentsOnClass.indexOf(studentCode));
                         classIns.setListOfStudentCodes(studentsOnClass);
-                        //System.out.println(classIns.update());
+                        System.out.println(classIns.update());
                     }
                 } else {
                     if(!studentsOnClass.contains(studentCode)){

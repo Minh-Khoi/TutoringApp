@@ -8,6 +8,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--page parameters-->
+        <meta content="${usingTeacher.token}" name="usingTeacherToken"/>
+        <meta content="${message}" name="message"/>
+        <meta content="${pageContext.servletContext.contextPath}" name="pageContextPath"/>
+        <!--<span hidden role="meta" name="teachersList">${teachersList}</span>-->
+        
+        <!--page parameters end-->
         <title>Classes 's Task. Tutoring Web App</title>
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -46,10 +53,7 @@
         </nav>
 
         <div class="row">
-            
-            <script>
-            </script>
-            
+                        
             <div class="col-sm-4 mt-2" style="border-width: 3px !important">
                 <h1> 
                     Info for Class ID: <br/>
@@ -115,11 +119,11 @@
                         /**
                          * This function activate the form (disabled loaded) and show the button ".btn_submit" (update button)
                          */
-                        function activateUpdating(activating){
-                            $("button.btn_activate").css("display", (activating) ? "none":"");
-                            $("button.btn_submit, button.btn_unactivate").css("display", (!activating) ? "none":"");
-                            $("form#frm input").attr("disabled", !activating);
-                        }
+//                        function activateUpdating(activating){
+//                            $("button.btn_activate").css("display", (activating) ? "none":"");
+//                            $("button.btn_submit, button.btn_unactivate").css("display", (!activating) ? "none":"");
+//                            $("form#frm input").attr("disabled", !activating);
+//                        }
                     </script>
                     <button class="btn btn-block btn-info btn_submit" type="submit" style="display:none" >
                         <b>
@@ -237,48 +241,40 @@
                     </div>
                 </div>
                 <!--End Modal-->
-                <script>
-                    /**
-                     * Handle the event showing modal_delete_class
-                     */
-                    $(".modal#modal_delete_class").on("shown.bs.modal", (event) => {
-                        let classID = $(".col-sm-4 h1 .text-break .text-success").html();
-                        $(event.target).find("form > input[name='classID']").val(classID);
-                    })
-                </script>
+                
             </div>
             <div class="col-sm-8 mt-2">
                 <select class="form-control" id="set-active" onchange="loadClassesList(event)">
                     <option value="1" checked> active </option>
                     <option value="0"> Inactive </option>
                     <script>
-                        /** 
-                         * Handle the event on change of the select "set-active" 
-                         */
-                        function loadClassesList(event){
-                            let status = document.getElementById("set-active").value;
-                            fetch("${pageContext.servletContext.contextPath}/loadclasseslist/"+status+".html", {
-                                method:"GET",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    "Teacher-Token" : "${usingTeacher.token}"
-                                }
-                            }).then(response => response.text())
-                            .then(result => {
-                                console.log(result);
-                                if(result.indexOf("ERROR") != -1){
-                                    alert(result);
-                                }
-                                let listClasses = JSON.parse(result);
-                                $("#find-class option").remove();
-                                for(let cla of listClasses){
-                                    let newOption = $("<option></option>").attr("value", cla.ClassID)
-                                                        .text(cla.Subject+" (Class ID: " + cla.ClassID+")");
-                                    $("#find-class").prepend(newOption);
-                                };
-                                loadClassInfo();
-                            });
-                        };
+//                        /** 
+//                         * Handle the event on change of the select "set-active" 
+//                         */
+//                        function loadClassesList(event){
+//                            let status = document.getElementById("set-active").value;
+//                            fetch("${pageContext.servletContext.contextPath}/loadclasseslist/"+status+".html", {
+//                                method:"GET",
+//                                headers: {
+//                                    'Content-Type': 'application/json',
+//                                    "Teacher-Token" : "${usingTeacher.token}"
+//                                }
+//                            }).then(response => response.text())
+//                            .then(result => {
+//                                console.log(result);
+//                                if(result.indexOf("ERROR") != -1){
+//                                    alert(result);
+//                                }
+//                                let listClasses = JSON.parse(result);
+//                                $("#find-class option").remove();
+//                                for(let cla of listClasses){
+//                                    let newOption = $("<option></option>").attr("value", cla.ClassID)
+//                                                        .text(cla.Subject+" (Class ID: " + cla.ClassID+")");
+//                                    $("#find-class").prepend(newOption);
+//                                };
+//                                loadClassInfo();
+//                            });
+//                        };
                     </script>
                 </select>                
                 
@@ -294,139 +290,82 @@
                         </c:choose>
                     </c:forEach>
                     <script data-desc="These scripts handle the displaying of a class infomation (basic info + list of student">
-                        /**
-                        * Function handle the click event on delete/restore button
-                        */
-                        function deleteOrRestore(action, stCode){
-                            let classID = $("#find-class").val();
-                            let actionPath = action + "/studentonclass" ;
-                            fetch("${pageContext.servletContext.contextPath}/"+actionPath +"/" + classID+".html", {
-                                body: stCode,
-                                method:"POST",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    "Teacher-Token" : "${usingTeacher.token}"
-                                }
-                            }).then(response => response.text())
-                            .then(result => {
-                                console.log(result);
-                                if(result.indexOf("ERROR") != -1){
-                                    alert(result);
-                                }
-                            });
-                        }
-                        //end function
-                        /**
-                        * Handle the event onclick of 
-                        */
-                        async function loadClassInfo(event){
-                            activateUpdating(false);
-                            let classIsAchived = await loadBasicInfoOfClass();
-                            console.log(classIsAchived);
-                            loadStudentList(classIsAchived);
-                        }
+//                        /**
+//                        * Function handle the click event on delete/restore button
+//                        */
+//                        function deleteOrRestore(action, stCode){
+//                            let classID = $("#find-class").val();
+//                            let actionPath = action + "/studentonclass" ;
+//                            fetch("${pageContext.servletContext.contextPath}/"+actionPath +"/" + classID+".html", {
+//                                body: stCode,
+//                                method:"POST",
+//                                headers: {
+//                                    'Content-Type': 'application/json',
+//                                    "Teacher-Token" : "${usingTeacher.token}"
+//                                }
+//                            }).then(response => response.text())
+//                            .then(result => {
+//                                console.log(result);
+//                                if(result.indexOf("ERROR") != -1){
+//                                    alert(result);
+//                                }
+//                            });
+//                        }
+//                        //end function
+//                        /**
+//                        * Handle the event onclick of 
+//                        */
+//                        async function loadClassInfo(event){
+//                            activateUpdating(false);
+//                            let classIsAchived = await loadBasicInfoOfClass();
+//                            console.log(classIsAchived);
+//                            loadStudentList(classIsAchived);
+//                        }
                         
-                        /** 
-                         * Function load Students List
-                         */
-                        function loadStudentList(classIsArchived = false){
-                            let classID = $("#find-class").val();
-                            fetch("${pageContext.servletContext.contextPath}/loadstudentsofclass/"+classID+".html",{
-                                method:"GET",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    "Teacher-Token" : "${usingTeacher.token}"
-                                }
-                            }).then(response => response.text())
-                            .then(result => {
-                                if(result.indexOf("ERROR") !== -1){
-                                    alert(result);
-                                }
-                                $("table#dtBasicExample tbody").html("");
-                                let list = JSON.parse(result);
-                                for(let detailsStudent of list){
-                                    let newRow = $("<tr></tr>").attr("data-student-code",detailsStudent["StudentCode"]);
-                                    let newCell = $("<td></td>");
-                                    // Add to newRow the info of "Fullname", "Gender", "Birthday", "Phone", and "Email" of a student
-                                    newCell.html(detailsStudent["Fullname"]);
-                                    newRow.append(newCell.clone());
-                                    newCell.html((detailsStudent["Gender"] ===0) ? "Female" : "Male");
-                                    newRow.append(newCell.clone());
-                                    newCell.html(detailsStudent["Birthday"]);
-                                    newRow.append(newCell.clone());
-                                    newCell.html(detailsStudent["Phone"]);
-                                    newRow.append(newCell.clone());
-                                    newCell.html(detailsStudent["Email"]);
-                                    newRow.append(newCell.clone());
-                                    // Add the button for (delete / restore) on the last cell
-                                    if(!classIsArchived){
-                                        let lastCellDelButton = 
-                                            $("<button></button>").addClass("btn btn-danger").html("Delete")
-                                                .on("click", (event)=> {
-                                                    $(event.target).slideToggle();
-                                                    $(event.target.nextSibling).slideToggle();
-                                                    deleteOrRestore("delete", detailsStudent["StudentCode"]);
-                                                });
-                                        let lastCellRestoreButton = 
-                                            $("<button></button>").addClass("btn btn-secondary").html("Restore").css("display", "none")
-                                                .on("click", (event)=> {
-                                                    $(event.target).slideToggle();
-                                                    $(event.target.previousSibling).slideToggle();
-                                                    deleteOrRestore("restore", detailsStudent["StudentCode"]);
-                                                });;
-                                        newCell.html(lastCellDelButton);
-                                        newCell.append(lastCellRestoreButton);
-                                    }
-                                    newRow.append(newCell);
-                                    // end adding button
-                                    $("table#dtBasicExample tbody").append(newRow);
-                                };
-                            });
-                        }
-                        // End Function
+//                        
 
-                        async function loadBasicInfoOfClass(){
-                            let classIsArchived = false;
-                            let classID = $("#find-class").val();
-                            await fetch("${pageContext.servletContext.contextPath}/loadbasicinfoofclass/"+classID+".html",{
-                                method:"GET",
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    "Teacher-Token" : "${usingTeacher.token}"
-                                }
-                            }).then(response => response.text())
-                            .then(result => {
-                                if(result.indexOf("ERROR") !== -1){
-                                    alert(result);
-                                }
-                                let infoOfClass = JSON.parse(result);
-                                $(".col-sm-4 h1 .text-break .text-success").html(infoOfClass["ClassID"]);
-                                $("form#frm input[name='classID']").val(infoOfClass["ClassID"]);
-                                $("form#frm input[name='subject']").val(infoOfClass["Subject"]);
-                                $("form#frm input[name='fee']").val(infoOfClass["Fee"]);
-                                $("form#frm input[name='remuneration']").val(infoOfClass["Remuneration"]);
-                                $("form#frm datalist#remunerationSuggest option").val(
-                                        infoOfClass["ListOfStudents"].length * infoOfClass["Fee"] * 0.3
-                                    );
-                                console.log(infoOfClass["ListOfStudents"].length * infoOfClass["Fee"]);
-                                $("form#frm input[name='teacherID']").val(infoOfClass["TeacherID"]);
-                                // Script for "Archive this class" button
-                                if(infoOfClass["IsArchived"]===1){
-                                    $("button.archiveClass").html("THis class was archived").on("click", ()=>{/*do NOTHING*/});
-                                    $("button[data-target='#modal_all_students_list']").css("display", "none");
-                                    classIsArchived = true;
-                                } else {
-                                    $("button.archiveClass").html("Archive this class")
-                                                        .on("click", (event)=>{
-                                                                archiveClass(event);
-                                                        });
-                                    $("button[data-target='#modal_all_students_list']").css("display", "");
-                                }
-                                // End Script for "Archive this class" button
-                            });
-                            
-                            return classIsArchived;
-                        }
+//                        async function loadBasicInfoOfClass(){
+//                            let classIsArchived = false;
+//                            let classID = $("#find-class").val();
+//                            await fetch("${pageContext.servletContext.contextPath}/loadbasicinfoofclass/"+classID+".html",{
+//                                method:"GET",
+//                                headers: {
+//                                    'Content-Type': 'application/json',
+//                                    "Teacher-Token" : "${usingTeacher.token}"
+//                                }
+//                            }).then(response => response.text())
+//                            .then(result => {
+//                                if(result.indexOf("ERROR") !== -1){
+//                                    alert(result);
+//                                }
+//                                let infoOfClass = JSON.parse(result);
+//                                $(".col-sm-4 h1 .text-break .text-success").html(infoOfClass["ClassID"]);
+//                                $("form#frm input[name='classID']").val(infoOfClass["ClassID"]);
+//                                $("form#frm input[name='subject']").val(infoOfClass["Subject"]);
+//                                $("form#frm input[name='fee']").val(infoOfClass["Fee"]);
+//                                $("form#frm input[name='remuneration']").val(infoOfClass["Remuneration"]);
+//                                $("form#frm datalist#remunerationSuggest option").val(
+//                                        infoOfClass["ListOfStudents"].length * infoOfClass["Fee"] * 0.3
+//                                    );
+//                                console.log(infoOfClass["ListOfStudents"].length * infoOfClass["Fee"]);
+//                                $("form#frm input[name='teacherID']").val(infoOfClass["TeacherID"]);
+//                                // Script for "Archive this class" button
+//                                if(infoOfClass["IsArchived"]===1){
+//                                    $("button.archiveClass").html("THis class was archived").on("click", ()=>{/*do NOTHING*/});
+//                                    $("button[data-target='#modal_all_students_list']").css("display", "none");
+//                                    classIsArchived = true;
+//                                } else {
+//                                    $("button.archiveClass").html("Archive this class")
+//                                                        .on("click", (event)=>{
+//                                                                archiveClass(event);
+//                                                        });
+//                                    $("button[data-target='#modal_all_students_list']").css("display", "");
+//                                }
+//                                // End Script for "Archive this class" button
+//                            });
+//                            
+//                            return classIsArchived;
+//                        }
                     </script>
                 </select>
                 
@@ -478,38 +417,38 @@
                                             </tr>
                                         </c:forEach>
                                         <script>
-                                            /**
-                                             * Handle the "click" event of buttons in the table "all students"
-                                             */
-                                            function addToClassOrRestore(event, action, stCode){
-                                                $(event.target).slideToggle();
-                                                $(event.target).siblings().slideToggle();
-                                                let classID= $("#find-class").val();
-                                                let actionPath = action + "/studenttoclass" ;
-                                                fetch("${pageContext.servletContext.contextPath}/"+actionPath +"/" + classID+".html", {
-                                                    body: stCode,
-                                                    method:"POST",
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                        "Teacher-Token" : "${usingTeacher.token}"
-                                                    }
-                                                }).then(response => response.text())
-                                                .then(result => {
-                                                    if(result.indexOf("ERROR") != -1){
-                                                        alert(result);
-                                                    }
-                                                    console.log(result);
-                                                });
-                                            }
-                                            /**
-                                            * And the filter feature to the input#searcher
-                                            */
-                                            $("#searcher").on("keyup", function() {
-                                                var value = $(this).val().toLowerCase();
-                                                $(".modal#modal_all_students_list #table_all_students tbody tr").filter(function() {
-                                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                                                });
-                                            });
+//                                            /**
+//                                             * Handle the "click" event of buttons in the table "all students"
+//                                             */
+//                                            function addToClassOrRestore(event, action, stCode){
+//                                                $(event.target).slideToggle();
+//                                                $(event.target).siblings().slideToggle();
+//                                                let classID= $("#find-class").val();
+//                                                let actionPath = action + "/studenttoclass" ;
+//                                                fetch("${pageContext.servletContext.contextPath}/"+actionPath +"/" + classID+".html", {
+//                                                    body: stCode,
+//                                                    method:"POST",
+//                                                    headers: {
+//                                                        'Content-Type': 'application/json',
+//                                                        "Teacher-Token" : "${usingTeacher.token}"
+//                                                    }
+//                                                }).then(response => response.text())
+//                                                .then(result => {
+//                                                    if(result.indexOf("ERROR") != -1){
+//                                                        alert(result);
+//                                                    }
+//                                                    console.log(result);
+//                                                });
+//                                            }
+//                                            /**
+//                                            * And the filter feature to the input#searcher
+//                                            */
+//                                            $("#searcher").on("keyup", function() {
+//                                                var value = $(this).val().toLowerCase();
+//                                                $(".modal#modal_all_students_list #table_all_students tbody tr").filter(function() {
+//                                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+//                                                });
+//                                            });
                                         </script>
                                     </tbody>
 
@@ -532,15 +471,7 @@
                     </div>
                 </div>
                 <script>
-                    /**
-                     * Create method handle modal close event. The button "add to class" should be redisplayed
-                     * and  the button "restore" should be done reversedly
-                     */
-                    $(".modal#modal_all_students_list").on("hidden.bs.modal", (event)=> {
-                        $(event.target).find(".btn.btn-primary").css("display","");
-                        $(event.target).find(".btn.btn-secondary").css("display","none");
-                        loadStudentList();
-                    })
+                    
                 </script>
                 <!--End Modal adding student to class-->
                 <!--Button and script archive the class-->
@@ -548,23 +479,23 @@
                     Archive this class
                 </button>
                 <script>
-                    function archiveClass(event){
-                        let classID = $("#find-class").val();
-                        fetch("${pageContext.servletContext.contextPath}/createfeeforclass/"+classID+".html", {
-                            body: classID , method:"POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                "Teacher-Token" : "${usingTeacher.token}"
-                            }
-                        }).then((response) => response.text())
-                        .then((result)=> {
-                            if (result.indexOf("ERROR") ===-1){
-                                alert(result);
-                            } else {
-                                loadClassInfo(event);
-                            }
-                        });
-                    }
+//                    function archiveClass(event){
+//                        let classID = $("#find-class").val();
+//                        fetch("${pageContext.servletContext.contextPath}/createfeeforclass/"+classID+".html", {
+//                            body: classID , method:"POST",
+//                            headers: {
+//                                'Content-Type': 'application/json',
+//                                "Teacher-Token" : "${usingTeacher.token}"
+//                            }
+//                        }).then((response) => response.text())
+//                        .then((result)=> {
+//                            if (result.indexOf("ERROR") ===-1){
+//                                alert(result);
+//                            } else {
+//                                loadClassInfo(event);
+//                            }
+//                        });
+//                    }
                 </script>
                 <!--End archive the class-->
                 <!--Button and script inactive class-->
@@ -608,6 +539,7 @@
         </div>
         
     </body>
+    <script src="${pageContext.servletContext.contextPath}/javascript/class_task.js"></script>
     <script>        
         $(document).ready(()=>{
             // Show the "message" parameter on alert box
@@ -619,6 +551,37 @@
             // This script add event on click to the select#find-class selector 's element
             loadClassInfo();
         });
+        /**
+        * Handle the event showing modal_delete_class
+        */
+        $(".modal#modal_delete_class").on("shown.bs.modal", (event) => {
+            let classID = $(".col-sm-4 h1 .text-break .text-success").html();
+//            console.log(classID);
+            $(event.target).find("form > input[name='classID']").val(classID);
+        })
+        
+        /**
+        * And the filter feature to the input#searcher
+        */
+        $("#searcher").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $(".modal#modal_all_students_list #table_all_students tbody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+        
+        /**
+        * Create method handle modal close event. The button "add to class" should be redisplayed
+        * and  the button "restore" should be done reversedly
+        */
+        $(".modal#modal_all_students_list").on("hidden.bs.modal", (event)=> {
+            $(event.target).find(".btn.btn-primary").css("display","");
+            $(event.target).find(".btn.btn-secondary").css("display","none");
+            loadStudentList();
+        })
+        
+        
+        
     </script>
     
     
