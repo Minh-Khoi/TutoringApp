@@ -64,7 +64,7 @@
                         "<span class="text-success"></span>"
                     </span>
                 </h1>
-                <form:form id="frm" action="${pageContext.servletContext.contextPath}/docreateclass.html" 
+                <form:form id="frm" action="${pageContext.servletContext.contextPath}/docreateteacher.html" 
                                     modelAttribute="teacherOnForm" onsubmit="doSubmitForm(event)" method="POST">
                     <input type="hidden" name="usingTeacherToken" value="${usingTeacher.token}" />
                     <div class="input-group mb-3">
@@ -79,8 +79,8 @@
                         <label class="input-group-prepend mb-0">
                             <span class="input-group-text" id="basic-addon1">Specialize</span>                            
                         </label>
-                        <form:input type="text" class="form-control" placeholder="DD/MM/YYYY" path="specialize"
-                               id="birthday" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                        <form:input type="text" class="form-control" placeholder="Specialize" path="specialize"
+                                    id="birthday" aria-label="Recipient's username" aria-describedby="basic-addon2" />
                     </div>
 
                     <div class="input-group mb-3">
@@ -217,43 +217,12 @@
                         </tr>
                     </tfoot>
                 </table>
-                <!--Script to make the DataTable work-->
-                <script type="text/javascript">
-                    
-//                    function onClicked(teacherIndex, formAction){
-//                        let teachersList = ${teachersList};
-//                        let teacherOnForm = teachersList[teacherIndex];
-//                        console.log(teacherOnForm);
-//                        // Border the form and display the reset button
-//                        $("#frm").parent().addClass("border pl-4 pb-3 pt-3");
-//                        $("#frm .btn_reset").css("display", "block");
-//                        // Render values for input tags
-//                        document.querySelector(".col-sm-4 h1 > span > span").innerHTML =  teacherOnForm["TeacherID"];
-//                        document.querySelector("form#frm input[name='fullname']").value = teacherOnForm["Fullname"];
-//                        document.querySelector("form#frm input[name='specialize']").value = teacherOnForm["Specialize"];
-//                        document.querySelector("form#frm input[name='phone']").value = teacherOnForm["Phone"];
-//                        document.querySelector("form#frm input[name='email']").value = teacherOnForm["Email"];
-//                        // switch formAction
-//                        if(formAction == "see"){
-//                            $("#frm").parent().addClass("border-secondary").removeClass("border-warning border-danger");
-//                            $("form#frm button[type='submit']").html('see').attr("disabled", true)
-//                                                    .addClass("bg-secondary").removeClass("bg-danger bg-warning");
-//                        } else if (formAction == "update"){
-//                            $("#frm").parent().addClass("border-warning").removeClass("border-secondary border-danger");
-//                            $("form#frm button[type='submit']").html('update')
-//                                        .addClass("bg-warning").removeClass("bg-danger bg-secondary");
-//                        } else {
-//                            $("#frm").parent().addClass("border-danger").removeClass("border-warning border-secondary");
-//                            $("form#frm button[type='submit']").html('delete')
-//                                        .addClass("bg-danger").removeClass("bg-warning bg-secondary");
-//                        }
-//                    }
-                </script>
+                
             </div>
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/teacher_task.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/teacher_task.js?t=12345"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box

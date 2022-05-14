@@ -59,12 +59,12 @@ function onClicked(studentIndex, formAction){
     } else if (formAction == "update"){
         $("form#frm input, form#frm select").attr("disabled",false);
         $("#frm").parent().addClass("border-warning").removeClass("border-secondary border-danger");
-        $("form#frm button[type='submit']").html('update')
+        $("form#frm button[type='submit']").html('update').attr("disabled", false)
                     .addClass("bg-warning").removeClass("bg-danger bg-secondary");
     } else {
         $("form#frm input, form#frm select").attr("disabled",false);
         $("#frm").parent().addClass("border-danger").removeClass("border-warning border-secondary");
-        $("form#frm button[type='submit']").html('delete')
+        $("form#frm button[type='submit']").html('delete').attr("disabled", false)
                     .addClass("bg-danger").removeClass("bg-warning bg-secondary");
     }
 }

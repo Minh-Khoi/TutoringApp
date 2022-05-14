@@ -169,17 +169,17 @@ public class Teacher extends JdbcDaoSupport{
                                                     "           ,[Password]) "
                                         + "values (':Fullname', ':Phone', ':Specialize', ':Email', ':Token', ':Password')",
                         SQL_READALL = "Select * from Teachers",
-                        SQL_READ_BY_COL = "Select * from Teachers where :col = ':value' ",
-                        SQL_READ_BY_ID = "Select * from Teachers where TeacherID = ':TeacherID'",
+                        SQL_READ_BY_COL = "Select * from Teachers where [:col] = ':value' ",
+                        SQL_READ_BY_ID = "Select * from Teachers where [TeacherID] = ':TeacherID'",
                         SQL_UPDATE = "Update Teachers set "
-                                        + "Fullname=':Fullname',"
-                                        + "Phone=':Phone',"
-                                        + "Specialize=':Specialize',"
-                                        + "Email=':Email',"
-                                        + "Token=':Token',"
-                                        + "Password=':Password'"
-                                        + " where TeacherID=':TeacherID'",
-                        SQL_DELETE = "Delete from Teachers where TeacherID=':TeacherID'";    
+                                        + "[Fullname]=':Fullname',"
+                                        + "[Phone]=':Phone',"
+                                        + "[Specialize]=':Specialize',"
+                                        + "[Email]=':Email',"
+                                        + "[Token]=':Token',"
+                                        + "[Password]=':Password'"
+                                        + " where [TeacherID]=':TeacherID'",
+                        SQL_DELETE = "Delete from Teachers where [TeacherID]=':TeacherID'";    
     
     
     public int create(){

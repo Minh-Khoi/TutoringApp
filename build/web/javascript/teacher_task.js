@@ -12,6 +12,7 @@ function doSubmitForm(ev){
         return;
     }
     ev.preventDefault();
+//    console.log("do submit form handler have invoked")
     let pageContextPath = $("meta[name=pageContextPath]").attr("content");
     let usingTeacherToken = $("meta[name=usingTeacherToken]").attr("content");
     let form = document.getElementById("frm");
@@ -55,11 +56,11 @@ function onClicked(teacherIndex, formAction){
                                 .addClass("bg-secondary").removeClass("bg-danger bg-warning");
     } else if (formAction == "update"){
         $("#frm").parent().addClass("border-warning").removeClass("border-secondary border-danger");
-        $("form#frm button[type='submit']").html('update')
+        $("form#frm button[type='submit']").html('update').attr("disabled", false)
                     .addClass("bg-warning").removeClass("bg-danger bg-secondary");
     } else {
         $("#frm").parent().addClass("border-danger").removeClass("border-warning border-secondary");
-        $("form#frm button[type='submit']").html('delete')
+        $("form#frm button[type='submit']").html('delete').attr("disabled", false)
                     .addClass("bg-danger").removeClass("bg-warning bg-secondary");
     }
 }

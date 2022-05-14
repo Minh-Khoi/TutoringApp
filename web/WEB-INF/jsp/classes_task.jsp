@@ -289,84 +289,7 @@
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                    <script data-desc="These scripts handle the displaying of a class infomation (basic info + list of student">
-//                        /**
-//                        * Function handle the click event on delete/restore button
-//                        */
-//                        function deleteOrRestore(action, stCode){
-//                            let classID = $("#find-class").val();
-//                            let actionPath = action + "/studentonclass" ;
-//                            fetch("${pageContext.servletContext.contextPath}/"+actionPath +"/" + classID+".html", {
-//                                body: stCode,
-//                                method:"POST",
-//                                headers: {
-//                                    'Content-Type': 'application/json',
-//                                    "Teacher-Token" : "${usingTeacher.token}"
-//                                }
-//                            }).then(response => response.text())
-//                            .then(result => {
-//                                console.log(result);
-//                                if(result.indexOf("ERROR") != -1){
-//                                    alert(result);
-//                                }
-//                            });
-//                        }
-//                        //end function
-//                        /**
-//                        * Handle the event onclick of 
-//                        */
-//                        async function loadClassInfo(event){
-//                            activateUpdating(false);
-//                            let classIsAchived = await loadBasicInfoOfClass();
-//                            console.log(classIsAchived);
-//                            loadStudentList(classIsAchived);
-//                        }
-                        
-//                        
-
-//                        async function loadBasicInfoOfClass(){
-//                            let classIsArchived = false;
-//                            let classID = $("#find-class").val();
-//                            await fetch("${pageContext.servletContext.contextPath}/loadbasicinfoofclass/"+classID+".html",{
-//                                method:"GET",
-//                                headers: {
-//                                    'Content-Type': 'application/json',
-//                                    "Teacher-Token" : "${usingTeacher.token}"
-//                                }
-//                            }).then(response => response.text())
-//                            .then(result => {
-//                                if(result.indexOf("ERROR") !== -1){
-//                                    alert(result);
-//                                }
-//                                let infoOfClass = JSON.parse(result);
-//                                $(".col-sm-4 h1 .text-break .text-success").html(infoOfClass["ClassID"]);
-//                                $("form#frm input[name='classID']").val(infoOfClass["ClassID"]);
-//                                $("form#frm input[name='subject']").val(infoOfClass["Subject"]);
-//                                $("form#frm input[name='fee']").val(infoOfClass["Fee"]);
-//                                $("form#frm input[name='remuneration']").val(infoOfClass["Remuneration"]);
-//                                $("form#frm datalist#remunerationSuggest option").val(
-//                                        infoOfClass["ListOfStudents"].length * infoOfClass["Fee"] * 0.3
-//                                    );
-//                                console.log(infoOfClass["ListOfStudents"].length * infoOfClass["Fee"]);
-//                                $("form#frm input[name='teacherID']").val(infoOfClass["TeacherID"]);
-//                                // Script for "Archive this class" button
-//                                if(infoOfClass["IsArchived"]===1){
-//                                    $("button.archiveClass").html("THis class was archived").on("click", ()=>{/*do NOTHING*/});
-//                                    $("button[data-target='#modal_all_students_list']").css("display", "none");
-//                                    classIsArchived = true;
-//                                } else {
-//                                    $("button.archiveClass").html("Archive this class")
-//                                                        .on("click", (event)=>{
-//                                                                archiveClass(event);
-//                                                        });
-//                                    $("button[data-target='#modal_all_students_list']").css("display", "");
-//                                }
-//                                // End Script for "Archive this class" button
-//                            });
-//                            
-//                            return classIsArchived;
-//                        }
-                    </script>
+                                
                 </select>
                 
                 <h4>Student 's list</h4>
@@ -539,7 +462,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/class_task.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/class_task.js?t=1113"></script>
     <script>        
         $(document).ready(()=>{
             // Show the "message" parameter on alert box

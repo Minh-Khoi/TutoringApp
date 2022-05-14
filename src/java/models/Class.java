@@ -115,6 +115,11 @@ public class Class extends JdbcDaoSupport{
     public void setRemuneration(double remuneration) {
         this.remuneration = remuneration;
     }
+    
+    public List<Fee> getFeesList(){
+        List<Fee> feesList = new Fee().readByCol("ClassID", this.classID);
+        return feesList;
+    }
 
     @Override
     public String toString() {
@@ -139,7 +144,7 @@ public class Class extends JdbcDaoSupport{
                                                         "           , [TeacherID]  ) "
                                         + "values (':Subject', ':ListOfStudents', ':Fee', ':Remuneration', ':TeacherID' )",
                         SQL_READALL = "Select * from Classes",
-                        SQL_READ_BY_COL = "Select * from Classes where :col = ':value' ",
+                        SQL_READ_BY_COL = "Select * from Classes where [:col] = ':value' ",
                         SQL_READ_BY_ID = "Select * from Classes where ClassID = ':ClassID' ",
                         SQL_UPDATE = "Update Classes set "
                                         + "Subject=':Subject',"

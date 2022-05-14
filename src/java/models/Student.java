@@ -112,6 +112,11 @@ public class Student extends JdbcDaoSupport{
         this.gender = gender;
     }
     
+    public List<Fee> getFeesList(){
+        List<Fee> fees = new Fee().readByCol("StudentCode", this.getStudentCode());
+        return fees;
+    }
+    
     
     @Override
     public String toString() {
@@ -138,24 +143,24 @@ public class Student extends JdbcDaoSupport{
                                         + "values (':StudentCode', ':Fullname', ':Birthday', ':Phone', ':Email', ':JoinTime', "
                                         + " ':Gender' )",
                         SQL_READALL = "Select * from Students",
-                        SQL_READ_BY_COL = "Select * from Students where :col = ':value' ",
-                        SQL_READ_BY_CODE = "Select * from Students where StudentCode = ':StudentCode' ",
+                        SQL_READ_BY_COL = "Select * from Students where [:col] = ':value' ",
+                        SQL_READ_BY_CODE = "Select * from Students where [StudentCode ]= ':StudentCode' ",
                         SQL_UPDATE = "Update Students set "
-                                        + "StudentCode=':StudentCode',"
-                                        + "Birthday=':Birthday',"
-                                        + "Email=':Email',"
-                                        + "Phone=':Phone',"
-                                        + "JoinTime=':JoinTime', "
-                                        + "Gender=':Gender'"
-                                        + " where StudentCode=':StudentCode' ",
+                                        + "[StudentCode]=':StudentCode',"
+                                        + "[Birthday]=':Birthday',"
+                                        + "[Email]=':Email',"
+                                        + "[Phone]=':Phone',"
+                                        + "[JoinTime]=':JoinTime', "
+                                        + "[Gender]=':Gender'"
+                                        + " where [StudentCode]=':StudentCode' ",
                         SQL_UPDATE_FULLNAME = "Update Students set "
-                                                    + "StudentCode=':StudentCode',"
-                                                    + "Fullname=':Fullname' "
-                                                    + " where Email=':Email' and "
-                                                    + "Phone=':Phone' and "
-                                                    + "JoinTime=':JoinTime' and "
-                                                    + "Gender=':Gender' ",
-                        SQL_DELETE = "Delete from Students where StudentCode=':StudentCode'";    
+                                                    + "[StudentCode]=':StudentCode',"
+                                                    + "[Fullname]=':Fullname' "
+                                                    + " where [Email]=':Email' and "
+                                                    + "[Phone]=':Phone' and "
+                                                    + "[JoinTime]=':JoinTime' and "
+                                                    + "[Gender]=':Gender' ",
+                        SQL_DELETE = "Delete from Students where [StudentCode]=':StudentCode'";    
     
     /**
      * Before using the create function, the Student instance must set the value of JOINTIME. Because this property is necessary

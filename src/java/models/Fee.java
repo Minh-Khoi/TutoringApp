@@ -84,7 +84,7 @@ public class Fee extends JdbcDaoSupport{
                                                         "           ,[IsPaid]) "
                                         + "values (':ClassID', ':StudentCode', ':IsPaid' )",
                         SQL_READALL = "Select * from FeeList",
-                        SQL_READ_BY_COL = "Select * from FeeList where :col = ':value' ",
+                        SQL_READ_BY_COL = "Select * from FeeList where [:col] = ':value' ",
                         SQL_READ_BY_ID = "Select * from FeeList where ID = ':ID' ",
                         SQL_UPDATE = "Update FeeList set "
                                         + "ClassID=':ClassID',"

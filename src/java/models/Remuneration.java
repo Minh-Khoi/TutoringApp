@@ -85,7 +85,7 @@ public class Remuneration extends JdbcDaoSupport{
                                                         "           ,[IsDisbursed]) "
                                         + "values (':ClassID', ':TeacherID', ':IsDisbursed' )",
                         SQL_READALL = "Select * from RemunerationList",
-                        SQL_READ_BY_COL = "Select * from RemunerationList where :col = ':value' ",
+                        SQL_READ_BY_COL = "Select * from RemunerationList where [:col] = ':value' ",
                         SQL_READ_BY_ID = "Select * from RemunerationList where ID = ':ID' ",
                         SQL_UPDATE = "Update RemunerationList set "
                                         + "ClassID=':ClassID',"

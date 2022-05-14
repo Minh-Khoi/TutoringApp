@@ -89,10 +89,11 @@ function loadStudentList(classIsArchived = false){
     let usingTeacherToken = $("meta[name=usingTeacherToken]").attr("content");
     let classID = $("#find-class").val();
     fetch(pageContextPath +"/loadstudentsofclass/"+classID+".html",{
-        method:"GET",
+        method:"GET", 
         headers: {
             'Content-Type': 'application/json',
-            "Teacher-Token" : usingTeacherToken
+            "Teacher-Token" : usingTeacherToken,
+            "classIsArchived" : classIsArchived
         }
     }).then(response => response.text())
     .then(result => {
@@ -107,7 +108,7 @@ function loadStudentList(classIsArchived = false){
             // Add to newRow the info of "Fullname", "Gender", "Birthday", "Phone", and "Email" of a student
             newCell.html(detailsStudent["Fullname"]);
             newRow.append(newCell.clone());
-            newCell.html((detailsStudent["Gender"] ===0) ? "Female" : "Male");
+            newCell.html((detailsStudent["Gender"] ===1) ? "Female" : "Male");
             newRow.append(newCell.clone());
             newCell.html(detailsStudent["Birthday"]);
             newRow.append(newCell.clone());
@@ -133,6 +134,9 @@ function loadStudentList(classIsArchived = false){
                         });;
                 newCell.html(lastCellDelButton);
                 newCell.append(lastCellRestoreButton);
+            } else {
+                $("#dtBasicExample tr > th:last-child").html("Paid the Fee");
+                newCell.html((detailsStudent["paidFee"] == 0) ? "Not Paid" : "Paid");
             }
             newRow.append(newCell);
             // end adding button
@@ -141,6 +145,7 @@ function loadStudentList(classIsArchived = false){
     });
 }
 // End Function
+
 
 async function loadBasicInfoOfClass(){
     let pageContextPath = $("meta[name=pageContextPath]").attr("content");
@@ -167,7 +172,8 @@ async function loadBasicInfoOfClass(){
         $("form#frm datalist#remunerationSuggest option").val(
                 infoOfClass["ListOfStudents"].length * infoOfClass["Fee"] * 0.3
             );
-        console.log(infoOfClass["ListOfStudents"].length * infoOfClass["Fee"]);
+//        console.log(infoOfClass["ListOfStudents"].length * infoOfClass["Fee"]);
+        console.log(infoOfClass);
         $("form#frm input[name='teacherID']").val(infoOfClass["TeacherID"]);
         // Script for "Archive this class" button
         if(infoOfClass["IsArchived"]===1){
