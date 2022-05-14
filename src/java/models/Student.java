@@ -115,6 +115,7 @@ public class Student extends JdbcDaoSupport{
     public List<Fee> getFeesList(){
         List<Fee> fees = new Fee().readByCol("StudentCode", this.getStudentCode());
         return fees;
+        
     }
     
     
