@@ -65,7 +65,7 @@ public class DoController {
     @RequestMapping(value = "/dochangestudent/{formAction}", method = RequestMethod.POST )
     @ResponseBody
     public String doChangeStudent(@RequestBody String jsonString, @RequestHeader(value = "Teacher-Token") String teacherToken,
-                                                            @PathVariable String formAction, ModelMap modMap){
+                                                            @PathVariable String formAction){
         //System.out.println(jsonString);
         if (!this.testValidTeacherToken(teacherToken)){
             return "ERROR: This feature only work with the teachers, who have permission ";
@@ -102,19 +102,45 @@ public class DoController {
                                                             ModelMap modMap, HttpServletRequest request){
         List<Teacher> teachers = new Teacher().readByCol("Token", teacherToken);
         System.out.println("do create students");
-        Teacher usingTeacher = teachers.get(0);
+        Teacher usingTeacher = null;
         if(teachers.size()==0){
             modMap.put("message", "ERROR: This feature only work with the teachers, who have permission");
-            return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
+            return this.doLoginSubmittingHandling(new Teacher(), modMap,request);
         } else {
+            usingTeacher = teachers.get(0);
             studentOnForm.setJoinTime(String.valueOf(new Date().getTime()));
             System.out.println(studentOnForm.create());
         }
         return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
     }
+    
+    @RequestMapping(value = "/checkstudentdepts", method = RequestMethod.POST)
+    @ResponseBody
+    public String checkStudentDepts(@RequestBody String jsonStr,
+                                        @RequestHeader(value = "Teacher-Token") String usingTeacherToken){
+        if (!this.testValidTeacherToken(usingTeacherToken)){
+            return "ERROR: This feature only work with the teachers, who have permission ";
+        } 
+        System.out.println(jsonStr);
+        JSONObject jsonObj = new JSONObject(jsonStr);
+        String studentCode = jsonObj.getString("StudentCode");
+        int classID = (jsonObj.get("ClassID").equals("all")) ? null : jsonObj.getInt("ClassID");
+        List<Fee> listOfStudentFees = new Fee().readByCol("StudentCode", studentCode);
+        List<Fee> listOfDepts = new ArrayList<>(); 
+        if (!Objects.isNull(classID)){
+            for (Fee fee : listOfStudentFees){
+                if(fee.getIsPaid()== 0){
+                    listOfDepts.add(fee);
+                } 
+            }
+        } else {
+            listOfDepts = listOfStudentFees;
+        }
+        return listOfDepts.toString();
+    }
     //</editor-fold>
     
-    //</editor-fold desc="Teachers tasks field">
+    //<editor-fold desc="Teachers tasks field">
     @RequestMapping(value = "/docreateteacher", method=RequestMethod.POST)
     public String doCreateTeacher(@ModelAttribute(value = "teacherOnForm") Teacher teacherOnForm, 
                                         @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
@@ -140,8 +166,7 @@ public class DoController {
     @RequestMapping(value = "/dochangeteacher/{formAction}", method = RequestMethod.POST)
     @ResponseBody
     public String doChangeTeacher(@RequestBody String jsonStr , @PathVariable(value = "formAction") String formAction,
-                                                        @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
-                                                                                ModelMap modMap, HttpServletRequest request){
+                                                        @RequestHeader(value = "Teacher-Token") String usingTeacherToken){
         JSONObject jsonObj = new JSONObject(jsonStr);
         System.out.println(jsonStr);
         if (!this.testValidTeacherToken(usingTeacherToken)){
@@ -180,7 +205,7 @@ public class DoController {
     @RequestMapping(value = "/loadclasseslist/{status}", method = RequestMethod.GET )
     @ResponseBody
     public String doLoadClassList(@PathVariable(value = "status") int status, 
-                                    @RequestHeader(value = "Teacher-Token") String teacherToken , HttpServletRequest request){
+                                            @RequestHeader(value = "Teacher-Token") String teacherToken ){
         Teacher teacher = new Teacher().readByCol("Token", teacherToken).get(0);
         if(Objects.isNull(teacher)){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
@@ -194,15 +219,14 @@ public class DoController {
     @RequestMapping(value = "/loadbasicinfoofclass/{classID}", method = RequestMethod.GET)
     @ResponseBody
     public String doLoadBasicInfoOfClass( @PathVariable(value = "classID") int classID,
-                                                @RequestHeader(value = "Teacher-Token") String usingTeacherToken, 
-                                                HttpServletRequest request){
+                                                @RequestHeader(value = "Teacher-Token") String usingTeacherToken){
         Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
         if(Objects.isNull(teacher)){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
         } else {
             models.Class classInstance = new models.Class().readByID(classID);
             // Check archived
-            List<Remuneration> remusList = new Remuneration().readByCol("ClassID", classID);
+//            List<Remuneration> remusList = new Remuneration().readByCol("ClassID", classID);
             List<Fee> fees = new Fee().readByCol("ClassID", classID);
             if (fees.size()>0 ){
                 JSONObject classJSONinstance = new JSONObject(classInstance.toString());
@@ -218,9 +242,8 @@ public class DoController {
     @RequestMapping(value = "/loadstudentsofclass/{classID}", method = RequestMethod.GET)
     @ResponseBody
     public String doLoadStudentsOfClass( @PathVariable(value = "classID") int classID,
-                                            @RequestHeader(value = "Teacher-Token") String usingTeacherToken, 
-                                            @RequestHeader(value = "classIsArchived") boolean classIsArchived,
-                                                                                        HttpServletRequest request){
+                                                @RequestHeader(value = "Teacher-Token") String usingTeacherToken, 
+                                                @RequestHeader(value = "classIsArchived") boolean classIsArchived){
         Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
         if(Objects.isNull(teacher)){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
@@ -259,7 +282,7 @@ public class DoController {
     public String deleteOrRestoreStudentOnClass(@PathVariable(value = "action") String action,
                                                     @PathVariable(value = "classID") int classID,
                                                     @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
-                                                    @RequestBody String studentCode, HttpServletRequest request){
+                                                    @RequestBody String studentCode){
         Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
         if(Objects.isNull(teacher) ){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
@@ -292,7 +315,7 @@ public class DoController {
     public String addOrRestoreStudentOnClass(@PathVariable(value = "action") String action,
                                                     @PathVariable(value = "classID") int classID,
                                                     @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
-                                                    @RequestBody String studentCode, HttpServletRequest request){
+                                                    @RequestBody String studentCode){
         Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
         if(Objects.isNull(teacher) ){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";

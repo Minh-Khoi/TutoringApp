@@ -37,7 +37,7 @@ function doSubmitForm(ev){
 
 function onClicked(studentIndex, formAction){
     let studentsList = JSON.parse($("span[name=studentsList]").html());
-    console.log(studentsList);
+//    console.log(studentsList);
     let studentOnForm = studentsList[studentIndex];
     // Border the form and display the reset button
     $("#frm").parent().addClass("border pl-4 pb-3 pt-3");

@@ -179,6 +179,7 @@
                             <th class="th-sm">Gender</th>
                             <th class="th-sm">Birth day</th>
                             <th class="th-sm">See Info</th>
+                            <th class="th-sm">Depts</th>
                             <th class="th-sm">Update/Delete</th>
                         </tr>
                     </thead>
@@ -191,12 +192,44 @@
                                 <td>
                                     <button class="btn btn-secondary" onclick="onClicked(${loop.index}, 'see')">See Info</button>
                                 </td>
+                                <td class="btn btn-link" onclick="checkDepts(${loop.index})">$  ${student.depts}</td>
                                 <td>
                                     <button class="btn btn-warning" onclick="onClicked(${loop.index}, 'update')">Update</button>
                                     <button class="btn btn-danger" onclick="onClicked(${loop.index}, 'delete')">Delete</button>
                                 </td>
                             </tr>
                         </c:forEach>
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Depts of Student: </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table table-striped table-bordered table-sm mt-2 mb-4">
+                                            <thead>
+                                                <tr>
+                                                    <th class="th-sm">Subject</th>
+                                                    <th class="th-sm">Teacher</th>
+                                                    <th class="th-sm">Fee</th>
+                                                    <th class="th-sm">Is Paid</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal -->
                     </tbody>
                     <tfoot>
                         <tr>
@@ -204,6 +237,7 @@
                             <th class="th-sm">Gender</th>
                             <th class="th-sm">Birth day</th>
                             <th class="th-sm">See Info</th>
+                            <th class="th-sm">Depts</th>
                             <th class="th-sm">Update/Delete</th>
                         </tr>
                     </tfoot>

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -26,6 +27,7 @@ public class Student extends JdbcDaoSupport{
     //<editor-fold desc="DTO field">
     private String studentCode, fullname, birthday, phone, email, joinTime;
     private int gender;
+    private float depts;
     
     public Student(){
         this.setDataSource(new Datasource());
@@ -38,8 +40,8 @@ public class Student extends JdbcDaoSupport{
         this.email = email;
         this.gender = gender;
 //        this.joinTime = null;
-
         this.setDataSource(new Datasource());
+        this.depts = this.getDepts();
     }
     
     public String getStudentCode() {
@@ -112,10 +114,15 @@ public class Student extends JdbcDaoSupport{
         this.gender = gender;
     }
     
-    public List<Fee> getFeesList(){
+    public float getDepts(){
         List<Fee> fees = new Fee().readByCol("StudentCode", this.getStudentCode());
-        return fees;
-        
+        float depts = 0;
+        for(Fee fee : fees){
+            int classID = fee.getClassID();
+            models.Class clas = new models.Class().readByID(classID);
+            depts += clas.getFee();
+        }
+        return depts;
     }
     
     
