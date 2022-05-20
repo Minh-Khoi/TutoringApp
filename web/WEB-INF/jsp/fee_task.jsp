@@ -1,17 +1,235 @@
-<%-- 
-    Document   : fee_task
-    Created on : Oct 30, 2021, 7:46:02 PM
-    Author     : USER
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page import="java.util.*" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Fee 's Task</title>
+        
+        <!--Page Parameters-->
+        <meta content="${usingTeacher.token}" name="usingTeacherToken"/>
+        <meta content="${message}" name="message"/>
+        <meta content="${pageContext.servletContext.contextPath}" name="pageContextPath"/>
+        <span hidden role="meta" name="studentsList">${studentsList}</span>
+        <!--Page Parameters-->
+        
+        
+        <title>Fees 's task. Tutoring Web App</title>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+        <!-- Google Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+        <!-- Bootstrap core CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+        <!--Datatable jquery-->
+        <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+        
     </head>
+    
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!--Jquery Table script-->
+    <script type="text/javascript" src="https:////cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    
     <body>
-        <h1>Hello World!</h1>
+        <nav class="navbar navbar-dark bg-primary">
+            <!-- Navbar content -->
+            <h3 style="color: white">Students management app!! Teacher: ${usingTeacher.fullname}</h3> 
+            <a class="btn btn-outline-warning" 
+               href="${pageContext.servletContext.contextPath}/gototeachers/reload/${usingTeacher.token}.html">
+                Go to teachers task
+            </a>
+            <a class="btn btn-outline-warning" 
+               href="${pageContext.servletContext.contextPath}/gotoclasses/reload/${usingTeacher.token}.html">
+                Go to Classes task
+            </a>
+            <a class="btn btn-outline-warning" 
+               href="${pageContext.servletContext.contextPath}/gotostudents/reload/${usingTeacher.token}.html">
+                Go to Students task
+            </a>
+        </nav>
+
+        <div class="row">
+            
+            <div class="col-sm-4 mt-2"style="border-width: 3px !important">
+                <h1> 
+                    Student Code: <br/>
+                    <span class="text-break" style="font-size:1rem; font-weight: 800">
+                        "<span class="text-success"></span>"
+                    </span>
+                </h1>
+                <form:form id="frm" action="${pageContext.servletContext.contextPath}/docreatestudent.html" 
+                                modelAttribute="studentOnForm" onsubmit="doSubmitForm(event)" method="POST">
+                    <input type="hidden" name="teacherToken" value="${usingTeacher.token}" />
+                    <div class="input-group mb-3">
+                        <label class="input-group-prepend mb-0" for="fullname">
+                          <span class="input-group-text" id="basic-addon1">Full name</span>
+                        </label>
+                        <form:input type="text" class="form-control" placeholder="Username" 
+                            id="fullname" path="fullname" aria-label="Username" aria-describedby="basic-addon1"/>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-prepend mb-0">
+                            <span class="input-group-text" id="basic-addon1">Birthday</span>                            
+                        </label>
+                        <form:input type="text" class="form-control" placeholder="DD/MM/YYYY" path="birthday"
+                               id="birthday" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-prepend mb-0">
+                            <span class="input-group-text" id="basic-addon1">Phone number</span>                            
+                        </label>
+                        <form:input type="number" class="form-control" path="phone"
+                                    id="phone" aria-describedby="basic-addon3"/>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-prepend mb-0" for="email">
+                            <span class="input-group-text">Email</span>
+                        </label>
+                        <form:input type="email" class="form-control" path="email" id="email"
+                                            aria-label="Amount (to the nearest dollar)"/>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-prepend mb-0">
+                                <label class="input-group-text" for="genderGroupSelect">Gender</label>
+                            </label>
+                            <form:select class="custom-select" id="genderGroupSelect" path="gender">
+                                <option selected>Choose...</option>
+                                <option value="1">Female</option>
+                                <option value="0">Male</option>
+                            </form:select>
+                        </div>
+                    </div>
+                    <button class="btn btn-block btn-info btn_submit" type="submit" >
+                        <b>
+                            <c:choose>
+                                <c:when test="${not empty formAction}">
+                                    ${formAction} 
+                                </c:when>    
+                                <c:otherwise>
+                                    Create new
+                                </c:otherwise>
+                            </c:choose>
+                        </b>
+                    </button>
+                    <a class="btn btn-outline-info mx-3 btn_reset" style="display:none; text-align: center" 
+                        href="${pageContext.servletContext.contextPath}/teacher_login/reload/${usingTeacher.token}.html">
+                        reload page to go back to Create new Student
+                    </a>
+                </form:form>
+                
+            </div>
+            <div class="col-sm-8 mt-2">
+                <!--CSS styles for DataTable-->
+                <style>
+                    .dataTables_wrapper {
+                        display: flex;
+                        flex-flow: row wrap;
+                    }
+                    .dataTables_wrapper .dataTables_filter, .dataTables_wrapper #dtBasicExample_paginate{
+                        margin-left: auto
+                    }
+                    .dataTables_wrapper #dtBasicExample_paginate a{
+                        box-sizing: border-box;
+                        display: inline-block;
+                        min-width: 1.5em;
+                        padding: .5em 1em;
+                        margin-left: 2px;
+                        text-align: center;
+                        text-decoration: none !important;
+                        cursor: pointer;
+                        *cursor: hand;
+                        color: #333 !important;
+                        border: 1px solid transparent;
+                        border-radius: 2px;
+                    }
+                    .dataTables_wrapper #dtBasicExample_paginate a.current{
+                        color: #333 !important;
+                        border: 1px solid #979797;
+                        background-color: #fff;
+                    }
+                    .dataTables_wrapper #dtBasicExample_paginate a:hover{
+                        color: #fff !important;
+                        border: 1px solid #111;
+                        outline: none;
+                        background-color: #2b2b2b
+                    }
+                </style>
+                <!--Table-->
+                <table id="dtBasicExample" 
+                       class="table table-striped table-bordered table-sm mt-2 mb-4" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Full name</th>
+                            <th class="th-sm">Gender</th>
+                            <th class="th-sm">Birth day</th>
+                            <th class="th-sm">See Info</th>
+                            <th class="th-sm">Depts</th>
+                            <th class="th-sm">Update/Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="student" items="${studentsList}" varStatus="loop">
+                            <tr>
+                                <td>${student.fullname}</td>
+                                <td>${(student.gender ==0)? "Male" : "Female" }</td>
+                                <td>${student.birthday}</td>
+                                <td>
+                                    <button class="btn btn-secondary" onclick="onClicked(${loop.index}, 'see')">See Info</button>
+                                </td>
+                                <td class="btn btn-link" onclick="onClickedCheckingDepts(${loop.index})">$  ${student.depts}</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="onClicked(${loop.index}, 'update')">Update</button>
+                                    <button class="btn btn-danger" onclick="onClicked(${loop.index}, 'delete')">Delete</button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="th-sm">Full name</th>
+                            <th class="th-sm">Gender</th>
+                            <th class="th-sm">Birth day</th>
+                            <th class="th-sm">See Info</th>
+                            <th class="th-sm">Depts</th>
+                            <th class="th-sm">Update/Delete</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+            </div>
+        </div>
+        
     </body>
+    <script src="${pageContext.servletContext.contextPath}/javascript/student_task.js?t=12345"></script>
+    <script>
+        window.onload = () => {
+            // Show the "message" parameter on alert box
+            let message = "${message}";
+            if(message.length>0){
+                alert(message);
+            }
+        }
+        $(document).ready(function () {
+            $('#dtBasicExample').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+    
 </html>

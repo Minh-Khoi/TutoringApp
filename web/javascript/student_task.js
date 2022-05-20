@@ -32,8 +32,9 @@ function doSubmitForm(ev){
             alert(result);
         }
         console.log(result);
-    })
+    });
 }
+
 
 function onClicked(studentIndex, formAction){
     let studentsList = JSON.parse($("span[name=studentsList]").html());

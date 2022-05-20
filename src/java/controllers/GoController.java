@@ -12,6 +12,7 @@ import models.Class;
 import models.Student;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -81,5 +82,12 @@ public class GoController {
         return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
     }
     
-//    @RequestMapping(value = )
+    @RequestMapping(value = "/gotodepts/reload/{token}", method = RequestMethod.POST)
+    public String gotoDepts(@PathVariable(value = "token") String usingTeacherToken, ModelMap modMap, HttpServletRequest request){
+        Teacher usingTeacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
+        if (Objects.isNull(usingTeacher)){
+            return "login";
+        }
+        return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
+    }
 }

@@ -114,17 +114,7 @@
                     <button class="btn btn-block btn-warning btn_unactivate" type="button" 
                             style="display:none" onclick="activateUpdating(false)">
                         Disabled Updating
-                    </button>                     
-                    <script>
-                        /**
-                         * This function activate the form (disabled loaded) and show the button ".btn_submit" (update button)
-                         */
-//                        function activateUpdating(activating){
-//                            $("button.btn_activate").css("display", (activating) ? "none":"");
-//                            $("button.btn_submit, button.btn_unactivate").css("display", (!activating) ? "none":"");
-//                            $("form#frm input").attr("disabled", !activating);
-//                        }
-                    </script>
+                    </button>  
                     <button class="btn btn-block btn-info btn_submit" type="submit" style="display:none" >
                         <b>
                             <c:choose>
@@ -247,35 +237,7 @@
                 <select class="form-control" id="set-active" onchange="loadClassesList(event)">
                     <option value="1" checked> active </option>
                     <option value="0"> Inactive </option>
-                    <script>
-//                        /** 
-//                         * Handle the event on change of the select "set-active" 
-//                         */
-//                        function loadClassesList(event){
-//                            let status = document.getElementById("set-active").value;
-//                            fetch("${pageContext.servletContext.contextPath}/loadclasseslist/"+status+".html", {
-//                                method:"GET",
-//                                headers: {
-//                                    'Content-Type': 'application/json',
-//                                    "Teacher-Token" : "${usingTeacher.token}"
-//                                }
-//                            }).then(response => response.text())
-//                            .then(result => {
-//                                console.log(result);
-//                                if(result.indexOf("ERROR") != -1){
-//                                    alert(result);
-//                                }
-//                                let listClasses = JSON.parse(result);
-//                                $("#find-class option").remove();
-//                                for(let cla of listClasses){
-//                                    let newOption = $("<option></option>").attr("value", cla.ClassID)
-//                                                        .text(cla.Subject+" (Class ID: " + cla.ClassID+")");
-//                                    $("#find-class").prepend(newOption);
-//                                };
-//                                loadClassInfo();
-//                            });
-//                        };
-                    </script>
+                    
                 </select>                
                 
                 <select class="form-control" id="find-class" onchange="loadClassInfo(event)" >
@@ -339,40 +301,7 @@
                                                 </td>
                                             </tr>
                                         </c:forEach>
-                                        <script>
-//                                            /**
-//                                             * Handle the "click" event of buttons in the table "all students"
-//                                             */
-//                                            function addToClassOrRestore(event, action, stCode){
-//                                                $(event.target).slideToggle();
-//                                                $(event.target).siblings().slideToggle();
-//                                                let classID= $("#find-class").val();
-//                                                let actionPath = action + "/studenttoclass" ;
-//                                                fetch("${pageContext.servletContext.contextPath}/"+actionPath +"/" + classID+".html", {
-//                                                    body: stCode,
-//                                                    method:"POST",
-//                                                    headers: {
-//                                                        'Content-Type': 'application/json',
-//                                                        "Teacher-Token" : "${usingTeacher.token}"
-//                                                    }
-//                                                }).then(response => response.text())
-//                                                .then(result => {
-//                                                    if(result.indexOf("ERROR") != -1){
-//                                                        alert(result);
-//                                                    }
-//                                                    console.log(result);
-//                                                });
-//                                            }
-//                                            /**
-//                                            * And the filter feature to the input#searcher
-//                                            */
-//                                            $("#searcher").on("keyup", function() {
-//                                                var value = $(this).val().toLowerCase();
-//                                                $(".modal#modal_all_students_list #table_all_students tbody tr").filter(function() {
-//                                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-//                                                });
-//                                            });
-                                        </script>
+                                        
                                     </tbody>
 
                                     <tfoot>
@@ -401,25 +330,7 @@
                 <button class="btn btn-warning archiveClass" >
                     Archive this class
                 </button>
-                <script>
-//                    function archiveClass(event){
-//                        let classID = $("#find-class").val();
-//                        fetch("${pageContext.servletContext.contextPath}/createfeeforclass/"+classID+".html", {
-//                            body: classID , method:"POST",
-//                            headers: {
-//                                'Content-Type': 'application/json',
-//                                "Teacher-Token" : "${usingTeacher.token}"
-//                            }
-//                        }).then((response) => response.text())
-//                        .then((result)=> {
-//                            if (result.indexOf("ERROR") ===-1){
-//                                alert(result);
-//                            } else {
-//                                loadClassInfo(event);
-//                            }
-//                        });
-//                    }
-                </script>
+                
                 <!--End archive the class-->
                 <!--Button and script inactive class-->
                 <button class="btn btn-outline-danger inactiveClass" >

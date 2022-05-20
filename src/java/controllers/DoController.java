@@ -199,6 +199,18 @@ public class DoController {
         }
         return "the Teacher "+teacher.getFullname() + ", id: "+ teacher.getTeacherID() + " " + formAction + " failed";
     }
+    //</editor-fold desc="Fees Tasks Field">
+    @RequestMapping(value = "/gotodepts", method = RequestMethod.POST)
+    public String gotoDeptsChecking(@ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
+                                        @ModelAttribute(value = "studentCode") String studentCode,
+                                        @ModelAttribute(value = "classID") int classID,
+                                        ModelMap modMap, HttpServletRequest request){
+        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
+        
+        return "";
+    }
+    //<editor-fold>
+    
     //</editor-fold>
     
     //<editor-fold desc="Class Tasks Field">
