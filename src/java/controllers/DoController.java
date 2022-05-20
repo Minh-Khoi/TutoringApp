@@ -203,11 +203,23 @@ public class DoController {
     @RequestMapping(value = "/gotodepts", method = RequestMethod.POST)
     public String gotoDeptsChecking(@ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                         @ModelAttribute(value = "studentCode") String studentCode,
-                                        @ModelAttribute(value = "classID") int classID,
                                         ModelMap modMap, HttpServletRequest request){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
+        if (this.testValidTeacherToken(usingTeacherToken)){
+            Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
+            modMap.put("usingTeacher", teacher);
+            if (teacher.getIsAdmin() == 0){
+                modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission ");
+                return "fee_task";
+            }
+            Student stud = new Student().readByCode(studentCode);
+            modMap.put("studentOnChecking", stud);
+            modMap.put("feesList", new Fee().readAll());
+            return "fee_task";
+        } else {
+            modMap.put("message", "ERROR: Only teachers can access the app ");
+            return "fee_task";
+        }
         
-        return "";
     }
     //<editor-fold>
     
