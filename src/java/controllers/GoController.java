@@ -5,10 +5,12 @@
  */
 package controllers;
 
+import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import models.Teacher;
 import models.Class;
+import models.Fee;
 import models.Student;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -75,19 +77,29 @@ public class GoController {
     
     @RequestMapping(value = "/gotostudents/reload/{token}", method = RequestMethod.GET)
     public String gotoStudents(@PathVariable(value = "token") String token, ModelMap modMap, HttpServletRequest request){
-        Teacher usingTeacher = new Teacher().readByCol("Token", token).get(0);
-        if (Objects.isNull(usingTeacher)){
+        List<Teacher> listTeachersDemo = new Teacher().readByCol("Token", token);
+        if (listTeachersDemo.size() ==0){
             return "login";
         }
+        Teacher usingTeacher = listTeachersDemo.get(0);
         return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
     }
     
     @RequestMapping(value = "/gotodepts/reload/{token}", method = RequestMethod.POST)
     public String gotoDepts(@PathVariable(value = "token") String usingTeacherToken, ModelMap modMap, HttpServletRequest request){
-        Teacher usingTeacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        if (Objects.isNull(usingTeacher)){
+        List<Teacher> listTeachersDemo = new Teacher().readByCol("Token", usingTeacherToken);
+        if (listTeachersDemo.size() ==0){
             return "login";
         }
-        return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
+        Teacher usingTeacher = listTeachersDemo.get(0);
+        if(usingTeacher.getIsAdmin()==0){
+            modMap.put("message", "Only admin can access Teachers task page");
+            return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
+        } else {
+            modMap.put("usingTeacher", usingTeacher);
+            modMap.put("studentOnChecking", new Student());
+            modMap.put("feesList", new Fee().readAll());
+            return "fee_task";
+        }
     }
 }

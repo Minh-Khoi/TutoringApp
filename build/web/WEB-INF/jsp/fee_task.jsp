@@ -13,7 +13,7 @@
         <meta content="${usingTeacher.token}" name="usingTeacherToken"/>
         <meta content="${message}" name="message"/>
         <meta content="${pageContext.servletContext.contextPath}" name="pageContextPath"/>
-        <span hidden role="meta" name="studentsList">${studentsList}</span>
+        <span hidden role="meta" name="studentsList">${feesList}</span>
         <!--Page Parameters-->
         
         
