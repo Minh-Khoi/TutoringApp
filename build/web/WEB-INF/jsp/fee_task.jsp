@@ -13,7 +13,8 @@
         <meta content="${usingTeacher.token}" name="usingTeacherToken"/>
         <meta content="${message}" name="message"/>
         <meta content="${pageContext.servletContext.contextPath}" name="pageContextPath"/>
-        <span hidden role="meta" name="studentsList">${feesList}</span>
+        <span hidden role="meta" name="feesList">${feesList}</span>
+        <span hidden role="meta" name="studentOnChecking">${studentOnChecking}</span>
         <!--Page Parameters-->
         
         
@@ -41,7 +42,7 @@
     <body>
         <nav class="navbar navbar-dark bg-primary">
             <!-- Navbar content -->
-            <h3 style="color: white">Students management app!! Teacher: ${usingTeacher.fullname}</h3> 
+            <h3 style="color: white">Fees management app!! Teacher: ${usingTeacher.fullname}</h3> 
             <a class="btn btn-outline-warning" 
                href="${pageContext.servletContext.contextPath}/gototeachers/reload/${usingTeacher.token}.html">
                 Go to teachers task
@@ -54,6 +55,11 @@
                href="${pageContext.servletContext.contextPath}/gotostudents/reload/${usingTeacher.token}.html">
                 Go to Students task
             </a>
+            
+            <form:form action="${pageContext.servletContext.contextPath}/gotodepts/reload.html">
+                <input name="usingTeacherToken" type="hidden" value="${usingTeacher.token}"/>
+                <button class="btn btn-outline-warning" type="submit"> Go to Fees task </button>
+            </form:form>
         </nav>
 
         <div class="row">
@@ -66,7 +72,7 @@
                     </span>
                 </h1>
                 <form:form id="frm" action="${pageContext.servletContext.contextPath}/docreatestudent.html" 
-                                modelAttribute="studentOnForm" onsubmit="doSubmitForm(event)" method="POST">
+                                modelAttribute="studentOnChecking" onsubmit="doSubmitForm(event)" method="POST">
                     <input type="hidden" name="teacherToken" value="${usingTeacher.token}" />
                     <div class="input-group mb-3">
                         <label class="input-group-prepend mb-0" for="fullname">
@@ -175,29 +181,24 @@
                        class="table table-striped table-bordered table-sm mt-2 mb-4" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th class="th-sm">Full name</th>
-                            <th class="th-sm">Gender</th>
-                            <th class="th-sm">Birth day</th>
+                            <th class="th-sm">Student name</th>
+                            <th class="th-sm">Class ID</th>
                             <th class="th-sm">See Info</th>
-                            <th class="th-sm">Depts</th>
-                            <th class="th-sm">Update/Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="student" items="${studentsList}" varStatus="loop">
-                            <tr>
-                                <td>${student.fullname}</td>
-                                <td>${(student.gender ==0)? "Male" : "Female" }</td>
-                                <td>${student.birthday}</td>
-                                <td>
-                                    <button class="btn btn-secondary" onclick="onClicked(${loop.index}, 'see')">See Info</button>
-                                </td>
-                                <td class="btn btn-link" onclick="onClickedCheckingDepts(${loop.index})">$  ${student.depts}</td>
-                                <td>
-                                    <button class="btn btn-warning" onclick="onClicked(${loop.index}, 'update')">Update</button>
-                                    <button class="btn btn-danger" onclick="onClicked(${loop.index}, 'delete')">Delete</button>
-                                </td>
-                            </tr>
+                        <c:forEach var="fee" items="${feesList}" varStatus="loop">
+                            <c:if test="${fee['Student'] != null}">
+                                <tr>
+                                    <span hidden>${fee["StudentCode"]}</span>
+                                    <td>${(fee["Student"]["Fullname"])}</td>
+                                    <td>${fee["ClassID"]}</td>
+                                    <td>
+                                        <button class="btn btn-secondary" onclick="onClicked(${loop.index}, 'see')">See Info</button>
+                                    </td>
+
+                                </tr>
+                            </c:if>
                         </c:forEach>
                         
                     </tbody>
@@ -217,7 +218,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/student_task.js?t=12345"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=12345"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box

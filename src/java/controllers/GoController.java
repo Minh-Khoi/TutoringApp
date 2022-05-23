@@ -12,6 +12,8 @@ import models.Teacher;
 import models.Class;
 import models.Fee;
 import models.Student;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -85,8 +87,9 @@ public class GoController {
         return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
     }
     
-    @RequestMapping(value = "/gotodepts/reload/{token}", method = RequestMethod.POST)
-    public String gotoDepts(@PathVariable(value = "token") String usingTeacherToken, ModelMap modMap, HttpServletRequest request){
+    @RequestMapping(value = "/gotodepts/reload", method = RequestMethod.POST)
+    public String gotoDepts(@ModelAttribute(value = "usingTeacherToken") String usingTeacherToken, 
+                                                                    ModelMap modMap, HttpServletRequest request){
         List<Teacher> listTeachersDemo = new Teacher().readByCol("Token", usingTeacherToken);
         if (listTeachersDemo.size() ==0){
             return "login";
@@ -94,11 +97,27 @@ public class GoController {
         Teacher usingTeacher = listTeachersDemo.get(0);
         if(usingTeacher.getIsAdmin()==0){
             modMap.put("message", "Only admin can access Teachers task page");
+            System.out.println(usingTeacher.getIsAdmin());
             return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
         } else {
             modMap.put("usingTeacher", usingTeacher);
             modMap.put("studentOnChecking", new Student());
-            modMap.put("feesList", new Fee().readAll());
+            List<Fee> feesList = new Fee().readByCol("IsPaid", 0);
+            // Must convert the feesList to String before converting it to JSONArray.
+            // In order to avoid the infinity loop 
+            // (when the JSONArray constructor invoke the JSONObject class, and the Fee instance does too)
+            JSONArray dataFeesSendToClient = new JSONArray(feesList.toString());
+            for (Object datasOfFee : dataFeesSendToClient){
+                if (datasOfFee instanceof JSONObject){
+                    String studentCode = ((JSONObject) datasOfFee).getString("StudentCode");
+                    Student studentInstance = new Student().readByCode(studentCode);
+                    if ( !Objects.isNull(studentInstance)){
+                        ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()));
+                    }
+                }
+            }
+//            System.out.println(dataFeesSendToClient.toString(4));
+            modMap.put("feesList", dataFeesSendToClient.toList());
             return "fee_task";
         }
     }

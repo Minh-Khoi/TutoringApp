@@ -202,7 +202,7 @@ public class DoController {
     //</editor-fold desc="Fees Tasks Field">
     @RequestMapping(value = "/gotodepts", method = RequestMethod.POST)
     public String gotoDeptsChecking(@ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
-                                        @ModelAttribute(value = "studentCode") String studentCode,
+                                        @ModelAttribute(value = "studentCode") String studentOnCheckingCode,
                                         ModelMap modMap, HttpServletRequest request){
         if (this.testValidTeacherToken(usingTeacherToken)){
             Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
@@ -211,15 +211,27 @@ public class DoController {
                 modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission ");
                 return "fee_task";
             }
-            Student stud = new Student().readByCode(studentCode);
+            Student stud = new Student().readByCode(studentOnCheckingCode);
             modMap.put("studentOnChecking", stud);
-            modMap.put("feesList", new Fee().readAll());
+            List<Fee> feesList = new Fee().readAll();
+            // Must convert the feesList to String before converting it to JSONArray.
+            // In order to avoid the infinity loop 
+            // (when the JSONArray constructor invoke the JSONObject class, and the Fee instance does too)
+            JSONArray dataFeesSendToClient = new JSONArray(feesList.toString());
+            for (Object datasOfFee : dataFeesSendToClient){
+                if (datasOfFee instanceof JSONObject){
+                    String studentCode = ((JSONObject) datasOfFee).getString("StudentCode");
+                    Student studentInstance = new Student().readByCode(studentCode);
+                    if ( !Objects.isNull(studentInstance)){
+                        ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()));
+                    }
+                }
+            }
             return "fee_task";
         } else {
             modMap.put("message", "ERROR: Only teachers can access the app ");
             return "fee_task";
         }
-        
     }
     //<editor-fold>
     

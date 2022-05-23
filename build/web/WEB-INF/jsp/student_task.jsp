@@ -54,6 +54,12 @@
                href="${pageContext.servletContext.contextPath}/gotostudents/reload/${usingTeacher.token}.html">
                 Go to Students task
             </a>
+                
+            <form:form action="${pageContext.servletContext.contextPath}/gotodepts/reload.html">
+                <input name="usingTeacherToken" type="hidden" value="${usingTeacher.token}"/>
+                <button class="btn btn-outline-warning" type="submit"> Go to Fees task </button>
+            </form:form>
+            
         </nav>
 
         <div class="row">
