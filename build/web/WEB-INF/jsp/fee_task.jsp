@@ -13,7 +13,7 @@
         <meta content="${usingTeacher.token}" name="usingTeacherToken"/>
         <meta content="${message}" name="message"/>
         <meta content="${pageContext.servletContext.contextPath}" name="pageContextPath"/>
-        <span hidden role="meta" name="feesList">${feesList}</span>
+        <span hidden role="meta" name="feesList">${feesJSON}</span>
         <span hidden role="meta" name="studentOnChecking">${studentOnChecking}</span>
         <!--Page Parameters-->
         
@@ -190,11 +190,14 @@
                         <c:forEach var="fee" items="${feesList}" varStatus="loop">
                             <c:if test="${fee['Student'] != null}">
                                 <tr>
-                                    <span hidden>${fee["StudentCode"]}</span>
-                                    <td>${(fee["Student"]["Fullname"])}</td>
+                                    <td>${fee['Student']["Fullname"]}</td>
                                     <td>${fee["ClassID"]}</td>
                                     <td>
-                                        <button class="btn btn-secondary" onclick="onClicked(${loop.index}, 'see')">See Info</button>
+                                        <button class="btn btn-secondary" 
+                                                onclick="loadStudentOnChecking(${loop.index})">
+                                            See Info
+                                        </button>
+                                        <span hidden>${fee["StudentCode"]}</span>
                                     </td>
 
                                 </tr>
@@ -204,12 +207,9 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th class="th-sm">Full name</th>
-                            <th class="th-sm">Gender</th>
-                            <th class="th-sm">Birth day</th>
+                            <th class="th-sm">Student name</th>
+                            <th class="th-sm">Class ID</th>
                             <th class="th-sm">See Info</th>
-                            <th class="th-sm">Depts</th>
-                            <th class="th-sm">Update/Delete</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -218,7 +218,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=12345"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=8745"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box

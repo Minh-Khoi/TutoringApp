@@ -208,7 +208,8 @@ public class DoController {
             Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
             modMap.put("usingTeacher", teacher);
             if (teacher.getIsAdmin() == 0){
-                modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission ");
+                modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission \n"
+                                                + " Please Login again ");
                 return "fee_task";
             }
             Student stud = new Student().readByCode(studentOnCheckingCode);
@@ -222,11 +223,16 @@ public class DoController {
                 if (datasOfFee instanceof JSONObject){
                     String studentCode = ((JSONObject) datasOfFee).getString("StudentCode");
                     Student studentInstance = new Student().readByCode(studentCode);
-                    if ( !Objects.isNull(studentInstance)){
-                        ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()));
+                    if ( !Objects.isNull(studentInstance)  ){
+                        ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()) );
                     }
                 }
             }
+            modMap.put("feesList", dataFeesSendToClient.toList());
+            // The "dataFeesSendToClient.toList()" function will return a JSONArray with elements are JSONobject instances
+            // , (not Fee instances), so they cannot be showed as a JSONString with methods toString().
+            // To send a JSON string on client, we use "dataFeesSendToClient.toString()" to get a JSONString directly
+            modMap.put("feesJSON", dataFeesSendToClient.toString());
             return "fee_task";
         } else {
             modMap.put("message", "ERROR: Only teachers can access the app ");

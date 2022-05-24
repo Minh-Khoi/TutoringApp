@@ -36,36 +36,27 @@ function doSubmitForm(ev){
 }
 
 
-function onClicked(studentIndex, formAction){
-    let studentsList = JSON.parse($("span[name=studentsList]").html());
-//    console.log(studentsList);
-    let studentOnForm = studentsList[studentIndex];
-    // Border the form and display the reset button
-    $("#frm").parent().addClass("border pl-4 pb-3 pt-3");
-    $("#frm .btn_reset").css("display", "block");
-    // Render values for input tags
-    document.querySelector(".col-sm-4 h1 > span > span").innerHTML =  studentOnForm["StudentCode"];
-    document.querySelector("form#frm input[name='fullname']").value = studentOnForm["Fullname"];
-    document.querySelector("form#frm input[name='birthday']").value = studentOnForm["Birthday"];
-    document.querySelector("form#frm input[name='phone']").value = studentOnForm["Phone"];
-    document.querySelector("form#frm input[name='email']").value = studentOnForm["Email"];
-    $("form#frm select option[selected]").removeAttr("selected");
-    $("form#frm select option[value='" + studentOnForm["Gender"] +"']").attr("selected",true);
-    // switch formAction
-    if(formAction == "see"){
-        $("form#frm input, form#frm select").attr("disabled",true);
-        $("#frm").parent().addClass("border-secondary").removeClass("border-warning border-danger");
-        $("form#frm button[type='submit']").html('see').attr("disabled", true)
-                                .addClass("bg-secondary").removeClass("bg-danger bg-warning");
-    } else if (formAction == "update"){
-        $("form#frm input, form#frm select").attr("disabled",false);
-        $("#frm").parent().addClass("border-warning").removeClass("border-secondary border-danger");
-        $("form#frm button[type='submit']").html('update').attr("disabled", false)
-                    .addClass("bg-warning").removeClass("bg-danger bg-secondary");
-    } else {
-        $("form#frm input, form#frm select").attr("disabled",false);
-        $("#frm").parent().addClass("border-danger").removeClass("border-warning border-secondary");
-        $("form#frm button[type='submit']").html('delete').attr("disabled", false)
-                    .addClass("bg-danger").removeClass("bg-warning bg-secondary");
+function loadStudentOnChecking(feeIndex = null){
+    let studentOnChecking, existingStudentOnChecking, dataStudentChecking;
+    let studentCheckedOnLoadStr = $("span[name='studentOnChecking']").html();
+    if (feeIndex != null){
+        existingStudentOnChecking = true;
+        let feesList = JSON.parse($("span[name=feesList]").html());
+        studentOnChecking = feesList[feeIndex]["Student"];
+        $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
+        $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
+        $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
+        $("form#frm input[name='email']").val(studentOnChecking["Email"]);
+    } else  {
+        studentOnChecking = JSON.parse(studentCheckedOnLoadStr)["StudentCode"];
+        if (existingStudentOnChecking !== false){
+            $(".col-sm-4 h1 > span > span").html(studentOnChecking["StudentCode"]);
+            $("#dtBasicExample").DataTable().search(studentOnChecking["StudentCode"]).draw();
+            $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
+            $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
+            $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
+            $("form#frm input[name='email']").val(studentOnChecking["Email"]);
+        }
     }
+    
 }

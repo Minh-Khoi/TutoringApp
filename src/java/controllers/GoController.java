@@ -111,13 +111,16 @@ public class GoController {
                 if (datasOfFee instanceof JSONObject){
                     String studentCode = ((JSONObject) datasOfFee).getString("StudentCode");
                     Student studentInstance = new Student().readByCode(studentCode);
-                    if ( !Objects.isNull(studentInstance)){
-                        ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()));
+                    if ( !Objects.isNull(studentInstance)  ){
+                        ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()) );
                     }
                 }
             }
-//            System.out.println(dataFeesSendToClient.toString(4));
             modMap.put("feesList", dataFeesSendToClient.toList());
+            // The "dataFeesSendToClient.toList()" function will return a JSONArray with elements are JSONobject instances
+            // , (not Fee instances), so they cannot be showed as a JSONString with methods toString().
+            // To send a JSON string on client, we use "dataFeesSendToClient.toString()" to get a JSONString directly
+            modMap.put("feesJSON", dataFeesSendToClient.toString());
             return "fee_task";
         }
     }
