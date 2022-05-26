@@ -6,6 +6,7 @@
 
 
 console.log("fee_task.js say hello");
+loadStudentOnChecking();
 
 function doSubmitForm(ev){
     let pageContextPath = document.querySelector("meta[name=pageContextPath]").content;
@@ -37,25 +38,31 @@ function doSubmitForm(ev){
 
 
 function loadStudentOnChecking(feeIndex = null){
-    let studentOnChecking, existingStudentOnChecking, dataStudentChecking;
-    let studentCheckedOnLoadStr = $("span[name='studentOnChecking']").html();
-    if (feeIndex != null){
-        existingStudentOnChecking = true;
+    let studentOnChecking, dataStudentChecking;
+    if (feeIndex !== null){
         let feesList = JSON.parse($("span[name=feesList]").html());
         studentOnChecking = feesList[feeIndex]["Student"];
         $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
         $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
         $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
         $("form#frm input[name='email']").val(studentOnChecking["Email"]);
+        $("form#frm select[name='gender']").val(studentOnChecking["Gender"]);
     } else  {
+        let studentCheckedOnLoadStr = $("span[name='studentOnChecking']").html();
         studentOnChecking = JSON.parse(studentCheckedOnLoadStr)["StudentCode"];
-        if (existingStudentOnChecking !== false){
+        // If the JSON parsed object have no property name "StudentCode", the studentOnChecking is 'undefined'
+        // It also meaning that "!studentOnChecking" IS TRUE
+        if ( !studentOnChecking ){
+            // do nothing
+        } 
+        //  If the JSON parsed object CONTAINS property name "StudentCode", so the studentOnChecking is a JSON OBJECT
+        else {
             $(".col-sm-4 h1 > span > span").html(studentOnChecking["StudentCode"]);
             $("#dtBasicExample").DataTable().search(studentOnChecking["StudentCode"]).draw();
             $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
             $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
             $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
-            $("form#frm input[name='email']").val(studentOnChecking["Email"]);
+            $("form#frm select[name='email']").val(studentOnChecking["Email"]);
         }
     }
     
