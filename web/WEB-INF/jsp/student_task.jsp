@@ -198,7 +198,15 @@
                                 <td>
                                     <button class="btn btn-secondary" onclick="onClicked(${loop.index}, 'see')">See Info</button>
                                 </td>
-                                <td class="btn btn-link" onclick="onClickedCheckingDepts(${loop.index})">$  ${student.depts}</td>
+                                <td class="btn btn-link">
+                                    <form action="${pageContext.servletContext.contextPath}/gotodepts.html" method="POST">
+                                        <input type="hidden" value="${usingTeacher.token}" name="usingTeacherToken" />
+                                        <input type="hidden" value="${student.studentCode}" name="studentCode" />
+                                        <button class="btn btn-link" type="submit">
+                                            $  ${student.depts}
+                                        </button>
+                                    </form>
+                                </td>
                                 <td>
                                     <button class="btn btn-warning" onclick="onClicked(${loop.index}, 'update')">Update</button>
                                     <button class="btn btn-danger" onclick="onClicked(${loop.index}, 'delete')">Delete</button>

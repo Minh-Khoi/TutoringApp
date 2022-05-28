@@ -35,6 +35,11 @@ function doSubmitForm(ev){
     });
 }
 
+//function onClickedCheckingDepts(studentIndex){
+//    let studentsList = JSON.parse($("span[name=studentsList]").html());
+//    let studentOnForm = studentsList[studentIndex];
+//    
+//}
 
 function onClicked(studentIndex, formAction){
     let studentsList = JSON.parse($("span[name=studentsList]").html());

@@ -42,6 +42,7 @@ function loadStudentOnChecking(feeIndex = null){
     if (feeIndex !== null){
         let feesList = JSON.parse($("span[name=feesList]").html());
         studentOnChecking = feesList[feeIndex]["Student"];
+//        $("#dtBasicExample").DataTable().search(studentOnChecking["StudentCode"]).draw();
         $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
         $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
         $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
@@ -49,7 +50,7 @@ function loadStudentOnChecking(feeIndex = null){
         $("form#frm select[name='gender']").val(studentOnChecking["Gender"]);
     } else  {
         let studentCheckedOnLoadStr = $("span[name='studentOnChecking']").html();
-        studentOnChecking = JSON.parse(studentCheckedOnLoadStr)["StudentCode"];
+        studentOnChecking = JSON.parse(studentCheckedOnLoadStr);
         // If the JSON parsed object have no property name "StudentCode", the studentOnChecking is 'undefined'
         // It also meaning that "!studentOnChecking" IS TRUE
         if ( !studentOnChecking ){
@@ -57,8 +58,11 @@ function loadStudentOnChecking(feeIndex = null){
         } 
         //  If the JSON parsed object CONTAINS property name "StudentCode", so the studentOnChecking is a JSON OBJECT
         else {
+//            console.log($("#dtBasicExample"));
             $(".col-sm-4 h1 > span > span").html(studentOnChecking["StudentCode"]);
+//            $("#dtBasicExample_filter input[type='search']").val(studentOnChecking["StudentCode"]);
             $("#dtBasicExample").DataTable().search(studentOnChecking["StudentCode"]).draw();
+//            searchField.search(studentOnChecking["StudentCode"]).draw();
             $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
             $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
             $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
