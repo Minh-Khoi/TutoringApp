@@ -101,7 +101,9 @@ public class GoController {
             return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
         } else {
             modMap.put("usingTeacher", usingTeacher);
-            modMap.put("studentOnChecking", new Student());
+            if( !modMap.containsKey("studentOnChecking") ){
+                modMap.put("studentOnChecking", new Student());
+            }
             List<Fee> feesList = new Fee().readByCol("IsPaid", 0);
             // Must convert the feesList to String before converting it to JSONArray.
             // In order to avoid the infinity loop 

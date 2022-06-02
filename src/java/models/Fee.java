@@ -135,12 +135,23 @@ public class Fee extends JdbcDaoSupport{
         }
         return returnedList;
     }
-    
+        
+    public Fee readByClassAndStudent(int classID, String studentCode){
+        String SQL = "Select * from FeeList where [ClassID] = ':classID' , [StudentCode] = ':studentCode' "
+                                            .replace(":classID", classID+"").replace(":studentCode", studentCode);
+//        List<Fee> returnedList = new ArrayList<>();
+        List<Map<String,Object>> list = this.getJdbcTemplate().queryForList(SQL);
+        if (list.isEmpty()){
+            return null;
+        }
+        Map<String,Object> map = list.get(0); 
+        return new Fee((int) map.get("ID"), (int) map.get("ClassID"), (int) map.get("IsPaid"), (String) map.get("StudentCode"));
+    }
     
     public Fee readByID(int id){
         String SQL = SQL_READ_BY_ID.replace(":ID", this.getId()+"");
         List<Fee> returnedList = new ArrayList<>();
-        List<Map<String,Object>> list = this.getJdbcTemplate().queryForList(SQL_READALL);
+        List<Map<String,Object>> list = this.getJdbcTemplate().queryForList(SQL);
         for(Map map:list){
             Fee fee = new Fee((int) map.get("ID"), (int) map.get("ClassID"), (int) map.get("IsPaid"), (String) map.get("StudentCode"));
             returnedList.add(fee);

@@ -65,16 +65,13 @@
         <div class="row">
             
             <div class="col-sm-4 mt-2"style="border-width: 3px !important">
+                <!-- Student info form. (This form just for show info, not for submitting -->
                 <h1> 
-                    Student Code: <br/>
-                    <span class="text-break" style="font-size:1rem; font-weight: 800">
-                        "<span class="text-success"></span>"
-                    </span>
+                    Student Info: 
                 </h1>
-                <form:form id="frm" action="${pageContext.servletContext.contextPath}/docreatestudent.html" 
-                                modelAttribute="studentOnChecking" onsubmit="doSubmitForm(event)" method="POST">
+                <form:form id="frm"  modelAttribute="studentOnChecking" >
                     <input type="hidden" name="teacherToken" value="${usingTeacher.token}" />
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                         <label class="input-group-prepend mb-0" for="fullname">
                           <span class="input-group-text" id="basic-addon1">Full name</span>
                         </label>
@@ -82,7 +79,7 @@
                             id="fullname" path="fullname" aria-label="Username" aria-describedby="basic-addon1"/>
                     </div>
 
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                         <label class="input-group-prepend mb-0">
                             <span class="input-group-text" id="basic-addon1">Birthday</span>                            
                         </label>
@@ -90,7 +87,7 @@
                                id="birthday" aria-label="Recipient's username" aria-describedby="basic-addon2" />
                     </div>
 
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                         <label class="input-group-prepend mb-0">
                             <span class="input-group-text" id="basic-addon1">Phone number</span>                            
                         </label>
@@ -98,7 +95,7 @@
                                     id="phone" aria-describedby="basic-addon3"/>
                     </div>
 
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                         <label class="input-group-prepend mb-0" for="email">
                             <span class="input-group-text">Email</span>
                         </label>
@@ -110,35 +107,49 @@
                         <div class="input-group-prepend">
                             
                         </div>
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-2">
                             <label class="input-group-prepend mb-0">
                                 <label class="input-group-text" for="genderGroupSelect">Gender</label>
                             </label>
-                            <form:select class="custom-select" id="genderGroupSelect" path="gender">
-                                <option selected>Choose...</option>
+                            <form:select class="custom-select" id="genderGroupSelect" path="gender" value="1">
+                                <option >Choose...</option>
                                 <option value="1">Female</option>
                                 <option value="0">Male</option>
                             </form:select>
                         </div>
                     </div>
-                    <button class="btn btn-block btn-info btn_submit" type="submit" >
-                        <b>
-                            <c:choose>
-                                <c:when test="${not empty formAction}">
-                                    ${formAction} 
-                                </c:when>    
-                                <c:otherwise>
-                                    Create new
-                                </c:otherwise>
-                            </c:choose>
-                        </b>
-                    </button>
+                    
                     <a class="btn btn-outline-info mx-3 btn_reset" style="display:none; text-align: center" 
                         href="${pageContext.servletContext.contextPath}/teacher_login/reload/${usingTeacher.token}.html">
                         reload page to go back to Create new Student
                     </a>
                 </form:form>
+                <!-- End student info showing form -->
                 
+                <!-- Class info form. (This form just for show info, not for submitting -->
+                <h1> 
+                    Class Info: 
+                </h1>
+                <div id="cls">
+                    <div class="input-group mb-2">
+                        <label class="input-group-prepend mb-0" >
+                          <span class="input-group-text" id="basic-addon1">Teacher's name</span>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Teacher's name" id="classTeacherName"/>
+                    </div>
+                    <div class="input-group mb-2">
+                        <label class="input-group-prepend mb-0" for="fullname">
+                          <span class="input-group-text" id="basic-addon1">Subject of class</span>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Subject of class" id="classSubject"/>
+                    </div>
+                    <div class="input-group mb-2">
+                        <label class="input-group-prepend mb-0" for="fullname">
+                          <span class="input-group-text" id="basic-addon1">Fee's cost</span>
+                        </label>
+                        <input type="text" class="form-control" placeholder="Fee's cost" id="classFeeCost"/>
+                    </div>
+                </div>
             </div>
             <div class="col-sm-8 mt-2">
                 <!--CSS styles for DataTable-->
@@ -218,7 +229,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=11335"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=12345"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box
