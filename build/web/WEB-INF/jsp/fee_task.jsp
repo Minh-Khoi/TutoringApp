@@ -193,7 +193,9 @@
                     <thead>
                         <tr>
                             <th class="th-sm">Student name</th>
-                            <th class="th-sm">Class ID</th>
+                            <th class="th-sm" ondblclick="filterClass()" >
+                                Class ID <br/> <span style="font-size: 10px">(Click here to reset filter class)</span>
+                            </th>
                             <th class="th-sm">See Info</th>
                         </tr>
                     </thead>
@@ -202,7 +204,11 @@
                             <c:if test="${fee['Student'] != null}">
                                 <tr>
                                     <td>${fee['Student']["Fullname"]}</td>
-                                    <td>${fee["ClassID"]}</td>
+                                    <td>
+                                        <button class="btn btn-link" onclick="filterClass(${fee['ClassID']})">
+                                            ${fee["ClassID"]}
+                                        </button>  
+                                    </td>
                                     <td>
                                         <button class="btn btn-secondary" 
                                                 onclick="loadStudentOnChecking(${loop.index})">
@@ -219,7 +225,9 @@
                     <tfoot>
                         <tr>
                             <th class="th-sm">Student name</th>
-                            <th class="th-sm">Class ID</th>
+                            <th class="th-sm" ondblclick="filterClass()" >
+                                Class ID <br/> <span style="font-size: 10px">(Click here to reset filter class)</span>
+                            </th>
                             <th class="th-sm">See Info</th>
                         </tr>
                     </tfoot>
@@ -229,7 +237,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=23345"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=2335"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box

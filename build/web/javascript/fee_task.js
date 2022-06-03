@@ -36,6 +36,27 @@ function doSubmitForm(ev){
     });
 }
 
+function filterClass(classID){
+    if (classID != null){
+        $("#dtBasicExample").DataTable().column(1).search(classID).draw();
+        let listOfFeesStr = $("span[name='feesList']").html();
+        let listOfFees = JSON.parse(listOfFeesStr);
+        for(let fee of listOfFees){
+            if (fee["ClassID"] == classID){
+                let classInfo = fee["Class"];
+                $("div#cls input#classTeacherName").val(classInfo["TeacherName"]);
+                $("div#cls input#classSubject").val(classInfo["Subject"]);
+                $("div#cls input#classFeeCost").val(classInfo["Fee"]);
+                break;
+            }
+        }
+    } else {
+        $("#dtBasicExample").DataTable().column(1).search('').draw();
+        console.log("fuck")
+    }
+    
+}
+
 
 function loadStudentOnChecking(feeIndex = null){
     $("form#frm input, form#frm select").attr("disabled",true);
