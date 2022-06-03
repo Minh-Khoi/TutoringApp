@@ -229,7 +229,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=12345"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=23345"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box

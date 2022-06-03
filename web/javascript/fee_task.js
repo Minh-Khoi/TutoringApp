@@ -38,24 +38,28 @@ function doSubmitForm(ev){
 
 
 function loadStudentOnChecking(feeIndex = null){
-    let studentOnChecking, dataStudentChecking;
     $("form#frm input, form#frm select").attr("disabled",true);
     $("div#cls input, form#frm select").attr("disabled",true);
     if (feeIndex !== null){
         let feesList = JSON.parse($("span[name=feesList]").html());
-        studentOnChecking = feesList[feeIndex]["Student"];
-        
+        // set info showed on Student Info Fields
+        let studentOnChecking = feesList[feeIndex]["Student"];
         $("form#frm input[name='fullname']").val(studentOnChecking["Fullname"]);
         $("form#frm input[name='birthday']").val(studentOnChecking["Birthday"]);
         $("form#frm input[name='phone']").val(studentOnChecking["Phone"]);
         $("form#frm input[name='email']").val(studentOnChecking["Email"]);
         $("form#frm select[name='gender']").val(studentOnChecking["Gender"]);
+        // set info showed on Class Info Fields
+        let classOnChecking = feesList[feeIndex]["Class"];
+        $("div#cls input#classTeacherName").val(classOnChecking["TeacherName"]);
+        $("div#cls input#classSubject").val(classOnChecking["Subject"]);
+        $("div#cls input#classFeeCost").val(classOnChecking["Fee"]);
     } else  {
         let studentCheckedOnLoadStr = $("span[name='studentOnChecking']").html();
         studentOnChecking = JSON.parse(studentCheckedOnLoadStr);
         // If the JSON parsed object have no property name "StudentCode", the studentOnChecking is 'undefined'
         // It also meaning that "!studentOnChecking" IS TRUE
-        if ( !studentOnChecking ){
+        if ( !studentOnChecking.hasOwnProperty("StudentCode") ){
             // do nothing
         } 
         //  If the JSON parsed object CONTAINS property name "StudentCode", so the studentOnChecking is a JSON OBJECT

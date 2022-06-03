@@ -112,9 +112,16 @@ public class GoController {
             for (Object datasOfFee : dataFeesSendToClient){
                 if (datasOfFee instanceof JSONObject){
                     String studentCode = ((JSONObject) datasOfFee).getString("StudentCode");
+                    int classID = ((JSONObject) datasOfFee).getInt("ClassID");
                     Student studentInstance = new Student().readByCode(studentCode);
+                    models.Class classInstance = new models.Class().readByID(classID);
+                    Teacher teacher = new Teacher().readByID(classInstance.getTeacherID());
                     if ( !Objects.isNull(studentInstance)  ){
                         ((JSONObject) datasOfFee).put("Student", new JSONObject(studentInstance.toString()) );
+                        ((JSONObject) datasOfFee).put("Class", 
+                                // This JSON object must be put one more property: "TeacherName"
+                                new JSONObject(classInstance.toString()).put("TeacherName", teacher.getFullname()) 
+                        );
                     }
                 }
             }
