@@ -215,7 +215,6 @@ public class DoController {
             Student stud = new Student().readByCode(studentOnCheckingCode);
             modMap.put("studentOnChecking", stud);
             return new GoController().gotoDepts(usingTeacherToken, modMap, request);
-
         } else {
             modMap.put("message", "ERROR: Only teachers can access the app ");
             return "fee_task";

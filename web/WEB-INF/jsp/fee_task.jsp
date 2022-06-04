@@ -194,7 +194,7 @@
                         <tr>
                             <th class="th-sm">Student name</th>
                             <th class="th-sm" ondblclick="filterClass()" >
-                                Class ID <br/> <span style="font-size: 10px">(Click here to reset filter class)</span>
+                                Class ID <br/> <span style="font-size: 10px">(Double Click here to reset filter class)</span>
                             </th>
                             <th class="th-sm">See Info</th>
                         </tr>
@@ -226,7 +226,7 @@
                         <tr>
                             <th class="th-sm">Student name</th>
                             <th class="th-sm" ondblclick="filterClass()" >
-                                Class ID <br/> <span style="font-size: 10px">(Click here to reset filter class)</span>
+                                Class ID <br/> <span style="font-size: 10px">(Double Click here to reset filter class)</span>
                             </th>
                             <th class="th-sm">See Info</th>
                         </tr>
@@ -237,7 +237,7 @@
         </div>
         
     </body>
-    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=2335"></script>
+    <script src="${pageContext.servletContext.contextPath}/javascript/fee_task.js?t=21335"></script>
     <script>
         window.onload = () => {
             // Show the "message" parameter on alert box
