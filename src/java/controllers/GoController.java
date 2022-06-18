@@ -44,14 +44,17 @@ public class GoController {
     
     /**
      * Using Token instead of teacherID to guarantee that this Request was sent by an admin.
+     * @param token
+     * @param modMap
+     * @param request
      */
     @RequestMapping(value = "/gototeachers/reload/{token}", method = RequestMethod.GET)
-    public String gotoTeacher(@PathVariable String token, ModelMap modMap, HttpServletRequest request){
-        Teacher usingTeacher = new Teacher().readByCol("Token", token).get(0);
-        if(usingTeacher.getIsAdmin()==0){
-            modMap.put("message", "Only admin can access Teachers task page");
-            return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
+    public String gotoTeacher(@PathVariable String token, ModelMap modMap, HttpServletRequest request){        
+        if(!this.testValidTeacherToken(token)){
+            modMap.put("message", "Only teachers can access Teachers task page");
+            return new DoController().doLoginSubmittingHandling(new Teacher(), modMap, request);
         } else {
+            Teacher usingTeacher = new Teacher().readByCol("Token", token).get(0);
             modMap.put("usingTeacher", usingTeacher);
             modMap.put("teacherOnForm", new Teacher());
             modMap.put("teachersList", new Teacher().readAll());
@@ -60,13 +63,12 @@ public class GoController {
     }
     
     @RequestMapping(value = "/gotoclasses/reload/{token}", method = RequestMethod.GET)
-    public String gotoClasses( @PathVariable(value = "token") String token,
-                                        ModelMap modMap, HttpServletRequest request){
-        Teacher usingTeacher = new Teacher().readByCol("Token", token).get(0);
-        if(usingTeacher.getIsAdmin()==0){
+    public String gotoClasses( @PathVariable(value = "token") String token, ModelMap modMap, HttpServletRequest request){        
+        if(!this.testValidTeacherToken(token)){
             modMap.put("message", "Only admin can access Teachers task page");
-            return new DoController().doLoginSubmittingHandling(usingTeacher, modMap, request);
+            return new DoController().doLoginSubmittingHandling(new Teacher(), modMap, request);
         } else {
+            Teacher usingTeacher = new Teacher().readByCol("Token", token).get(0);
             modMap.put("usingTeacher", usingTeacher);
             modMap.put("classOnFormUpdate", new Class());
             modMap.put("classOnFormCreate", new Class());
@@ -133,4 +135,26 @@ public class GoController {
             return "fee_task";
         }
     }
+    
+    // <editor-fold desc="PRIVATE FIELDS">
+    /** 
+     * all the tasks update, delete, create in this project is only available for the Teacher users. 
+     * When they submit those tasks, this function will check if they a Teacher user by the their token which is sent with 
+     * the request form datas
+     */
+    private boolean testValidTeacherToken(String token){
+        List<Teacher> teachers = new Teacher().readByCol("Token", token);
+//        //System.out.println(teachers.size());
+        return teachers.size()>0;
+    }
+    
+    
+    /**
+     * When a new Teacher instance is created. Its email must not be double with any email existing in database
+     */
+    private boolean checkEmailTeacherDouble(String email){
+        List<Teacher> teachers = new Teacher().readByCol("Email", email);
+        return teachers.size()>0;
+    }
+    //</editor-fold>
 }

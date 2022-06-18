@@ -69,6 +69,8 @@ public class DoController {
         //System.out.println(jsonString);
         if (!this.testValidTeacherToken(teacherToken)){
             return "ERROR: This feature only work with the teachers, who have permission ";
+        } else if (!this.testTeacherIsAdmin(teacherToken)){
+            return "ERROR: This feature only work with the teachers who is admin ";
         }
         JSONObject studentJSON = new JSONObject(jsonString);
         Student stud = new Student().readByCode((String) studentJSON.get("studentCode"));
@@ -86,12 +88,12 @@ public class DoController {
 //                return "The student " + stud.getFullname()+ ": " + stud.getStudentCode() +" "+ formAction+ " successfully";                
             } else if("delete".equals(formAction)) {
                 System.out.println(stud.delete());
-            } else{
-                Student student = new Student((String) studentJSON.get("fullname"), (String) studentJSON.get("birthday"), 
-                                                        (String) studentJSON.get("phone"),(String) studentJSON.get("email"), 
-                                                                                            (int) studentJSON.get("gender"));
-                System.out.println(student.create());
-            }
+            } //else{
+//                Student student = new Student((String) studentJSON.get("fullname"), (String) studentJSON.get("birthday"), 
+//                                                        (String) studentJSON.get("phone"),(String) studentJSON.get("email"), 
+//                                                                                            (int) studentJSON.get("gender"));
+//                System.out.println(student.create());
+//            }
         }
         return "The student " + stud.getFullname()+ ": " + stud.getStudentCode()+" "+ formAction + " successfully";
     }
@@ -108,6 +110,10 @@ public class DoController {
             return this.doLoginSubmittingHandling(new Teacher(), modMap,request);
         } else {
             usingTeacher = teachers.get(0);
+            if (usingTeacher.getIsAdmin() == 0){
+                modMap.put("message", "ERROR: This feature only work with the teachers who is admin");
+                return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
+            }
             studentOnForm.setJoinTime(String.valueOf(new Date().getTime()));
             System.out.println(studentOnForm.create());
         }
@@ -146,12 +152,16 @@ public class DoController {
                                         @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                                                     ModelMap modMap , HttpServletRequest request){
         List<Teacher> teachers = new Teacher().readByCol("Token", usingTeacherToken);
-        Teacher usingTeacher = teachers.get(0);
+        Teacher usingTeacher = null;
         if(teachers.size()==0){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission");
-            return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
+            return this.doLoginSubmittingHandling(new Teacher(), modMap,request);
         } else {
-//            System.out.println("not work");
+            usingTeacher = teachers.get(0);
+            if (usingTeacher.getIsAdmin() == 0){
+                modMap.put("message", "ERROR: This feature only work with the teachers who is admin who is admin");
+                return this.doLoginSubmittingHandling(usingTeacher, modMap,request);
+            }
             modMap.put("usingTeacher", usingTeacher);
             if(this.checkEmailTeacherDouble(usingTeacherToken)){
                 modMap.put("mesage", "This email has been used by another teacher");
@@ -171,7 +181,9 @@ public class DoController {
         System.out.println(jsonStr);
         if (!this.testValidTeacherToken(usingTeacherToken)){
             return "ERROR: This feature only work with the teachers, who have permission ";
-        } 
+        } else if (!this.testTeacherIsAdmin(usingTeacherToken)){
+            return "ERROR: This feature only work with the teachers who is admin ";
+        }
         Teacher teacher = new Teacher().readByID(jsonObj.getInt("teacherID"));
         if(!Objects.isNull(teacher)){
             if(formAction.equals("update")){
@@ -208,9 +220,9 @@ public class DoController {
             Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
             modMap.put("usingTeacher", teacher);
             if (teacher.getIsAdmin() == 0){
-                modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission \n"
-                                                + " Please Login again ");
-                return "fee_task";
+                modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission. "
+                                                                                                        + "Please Login again ");
+                return this.doLoginSubmittingHandling(teacher, modMap, request);
             }
             Student stud = new Student().readByCode(studentOnCheckingCode);
             modMap.put("studentOnChecking", stud);
@@ -456,6 +468,10 @@ public class DoController {
         return teachers.size()>0;
     }
     
+    private boolean testTeacherIsAdmin(String token){
+        List<Teacher> teachers = new Teacher().readByCol("Token", token);
+        return teachers.get(0).getIsAdmin() == 1;
+    }
     
     /**
      * When a new Teacher instance is created. Its email must not be double with any email existing in database
