@@ -5,23 +5,34 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
-       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
+    <!-- NOTE 4-a:
+    I dont have much ideas about what this script do. Maybe it invoke a built-in-class instance for the Spring IoC
+    for handling the Class which declared with annotation @Controller
+    -->
     <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
-    
-    <context:component-scan base-package="controllers"></context:component-scan>
-    <mvc:annotation-driven/>
 
-    <!--
-    Most controllers will use the ControllerClassNameHandlerMapping above, but
-    for the index controller we are using ParameterizableViewController, so we must
-    define an explicit mapping for it.
+    <!-- NOTE 4:
+    The view resolver: The scripts tell the Spring IoC define the directory where all the .jsp files are located
+    and how to find them (file with suffix ".jsp" only)
+    -->
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp" />
+
+    <!-- NOTE 4-b:
+    The index controller: Tell the Spring IoC how to handle when a request with path "/index.htm" 
+    These scripts below is generated automatically by Netbeans IDE.
+    Without auto-generating of Netbeans, we can completely handle this task in @Controller java class. 
+    (with @requestmapping("/index.htm"))
+          
+    In this application, I eventualty use file "redirect.jsp" (which declared as welcome file) 
+    to send redirect to path "login.html", which I handle in GoController class. 
+    So if I commented or deleted the scripts below, the application runtime would be not effected any more.
     -->
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
@@ -30,15 +41,6 @@
             </props>
         </property>
     </bean>
-
-    <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-          p:prefix="/WEB-INF/jsp/"
-          p:suffix=".jsp" />
-
-    <!--
-    The index controller.
-    -->
     <bean name="indexController"
           class="org.springframework.web.servlet.mvc.ParameterizableViewController"
           p:viewName="index" />
