@@ -23,7 +23,7 @@
         that is efficient in servlet own scope only. And "servlet-mapping" with "url-pattern" tell the Spring 
         which url-type to invoke corresponding servlet.
         
-        Config the servlet in MANDATORY. Evenly, with the empty url-patern: "/" .
+        Config the servlet is MANDATORY. Evenly, with the empty url-patern: "/" .
         And, I dont like to make complicated with something that I am lack of experiments. I love choosing declaring
         01 servlet only with empty url-pattern "/" .
     -->
@@ -45,6 +45,11 @@
     <!-- NOTE 3:
         This tag define the first view file loaded as homepage
         If the "welcome-file" has not been declared, The "index.jsp" or "index.html" would be found and loaded instead
+        
+        I recommend to use welcome file to send redirect to a specified path. 
+        Then you can handle to pass the parameters to the view redirected using method in @Controller class
+        
+        Or if your homepage is static html only, you should set it directly as welcome file
     -->
     <welcome-file-list>
         <welcome-file>redirect.jsp</welcome-file>
