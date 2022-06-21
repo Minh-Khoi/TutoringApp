@@ -11,9 +11,10 @@
 
     <!-- NOTE 4-a:
     I dont have much ideas about what this script do. Maybe it invoke a built-in-class instance for the Spring IoC
-    for handling the Class which declared with annotation @Controller
+                                                        for handling the Class which declared with annotation @Controller
+    But anyway, we don't need this line any more. It eventualy make an error on Spring framework version is >= 5.
     -->
-    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+    <!--<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>-->
 
     <!-- NOTE 4:
     The view resolver: The scripts tell the Spring IoC define the directory where all the .jsp files are located
@@ -34,7 +35,7 @@
     to send redirect to path "login.html", which I handle in GoController class. 
     So if I commented or deleted the scripts below, the application runtime would be not effected any more.
     -->
-    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+<!--    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <props>
                 <prop key="index.htm">indexController</prop>
@@ -43,6 +44,6 @@
     </bean>
     <bean name="indexController"
           class="org.springframework.web.servlet.mvc.ParameterizableViewController"
-          p:viewName="index" />
+          p:viewName="index" />-->
 
 </beans>
