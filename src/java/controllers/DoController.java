@@ -126,7 +126,9 @@ public class DoController {
                                         @RequestHeader(value = "Teacher-Token") String usingTeacherToken){
         if (!this.testValidTeacherToken(usingTeacherToken)){
             return "ERROR: This feature only work with the teachers, who have permission ";
-        } 
+        } else if (!this.testTeacherIsAdmin(usingTeacherToken)) {
+            return "ERROR: This feature only work with the teachers who is admin ";
+        }
         System.out.println(jsonStr);
         JSONObject jsonObj = new JSONObject(jsonStr);
         String studentCode = jsonObj.getString("StudentCode");
@@ -216,7 +218,7 @@ public class DoController {
     public String gotoDeptsChecking(@ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                         @ModelAttribute(value = "studentCode") String studentOnCheckingCode,
                                         ModelMap modMap, HttpServletRequest request){
-        if (this.testValidTeacherToken(usingTeacherToken)){
+        if (!this.testValidTeacherToken(usingTeacherToken)){
             Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
             modMap.put("usingTeacher", teacher);
             if (teacher.getIsAdmin() == 0){
@@ -241,9 +243,8 @@ public class DoController {
     @ResponseBody
     public String doLoadClassList(@PathVariable(value = "status") int status, 
                                             @RequestHeader(value = "Teacher-Token") String teacherToken ){
-        Teacher teacher = new Teacher().readByCol("Token", teacherToken).get(0);
-        if(Objects.isNull(teacher)){
-            return "ERROR: This feature only work with the teachers who is admin, who have permission";
+        if (!this.testValidTeacherToken(teacherToken)){
+            return "ERROR: This feature only work with the teachers, who have permission";
         } else {
             List classes = new models.Class().readByCol("Status", status);
             //System.out.println(new JSONArray(classes.toString()).toString(4));
@@ -255,9 +256,8 @@ public class DoController {
     @ResponseBody
     public String doLoadBasicInfoOfClass( @PathVariable(value = "classID") int classID,
                                                 @RequestHeader(value = "Teacher-Token") String usingTeacherToken){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        if(Objects.isNull(teacher)){
-            return "ERROR: This feature only work with the teachers who is admin, who have permission";
+        if (!this.testValidTeacherToken(usingTeacherToken)){
+            return "ERROR: This feature only work with the teachers, who have permission";
         } else {
             models.Class classInstance = new models.Class().readByID(classID);
             // Check archived
@@ -279,9 +279,8 @@ public class DoController {
     public String doLoadStudentsOfClass( @PathVariable(value = "classID") int classID,
                                                 @RequestHeader(value = "Teacher-Token") String usingTeacherToken, 
                                                 @RequestHeader(value = "classIsArchived") boolean classIsArchived){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        if(Objects.isNull(teacher)){
-            return "ERROR: This feature only work with the teachers who is admin, who have permission";
+        if (!this.testValidTeacherToken(usingTeacherToken)){
+            return "ERROR: This feature only work with the teachers, who have permission";
         } else {
             models.Class classInstance = new models.Class().readByID(classID);
             List<String> listOfStudentCodes = classInstance.getListOfStudentCodes();
@@ -318,10 +317,10 @@ public class DoController {
                                                     @PathVariable(value = "classID") int classID,
                                                     @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
                                                     @RequestBody String studentCode){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        if(Objects.isNull(teacher) ){
+        if (!this.testValidTeacherToken(usingTeacherToken)){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
         } else {
+            Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
             models.Class classIns = new models.Class().readByID(classID);
             if(teacher.getIsAdmin()==1 || classIns.getTeacherID() == teacher.getTeacherID()){
                 List studentsOnClass = new ArrayList<>(classIns.getListOfStudentCodes());
@@ -351,10 +350,10 @@ public class DoController {
                                                     @PathVariable(value = "classID") int classID,
                                                     @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
                                                     @RequestBody String studentCode){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        if(Objects.isNull(teacher) ){
+        if (!this.testValidTeacherToken(usingTeacherToken)){
             return "ERROR: This feature only work with the teachers who is admin, who have permission";
         } else {
+            Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
             models.Class classIns = new models.Class().readByID(classID);
             if(teacher.getIsAdmin()==1 || classIns.getTeacherID() == teacher.getTeacherID()){
                 List studentsOnClass = new ArrayList<>(classIns.getListOfStudentCodes());
@@ -383,9 +382,7 @@ public class DoController {
     public String doCreateClass(@ModelAttribute(value = "classOnFormCreate") models.Class createdClass,
                                             @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                             ModelMap modMap, HttpServletRequest request){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        //System.out.println(createdClass + "---" + createdClass.getTeacherID());
-        if(Objects.isNull(teacher) ||  teacher.getIsAdmin()!=1  ){
+        if (!this.testValidTeacherToken(usingTeacherToken) || !this.testTeacherIsAdmin(usingTeacherToken)){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
             if(createdClass.create() == 0){
@@ -402,8 +399,7 @@ public class DoController {
     public String doUpdateClass(@ModelAttribute(value = "classOnFormCreate") models.Class updatedClass,
                                     @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                     ModelMap modMap, HttpServletRequest request){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
-        if(Objects.isNull(teacher) || teacher.getIsAdmin()!=1 && teacher.getTeacherID() != updatedClass.getTeacherID() ){
+        if (!this.testValidTeacherToken(usingTeacherToken) || !this.testTeacherIsAdmin(usingTeacherToken)){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
             //System.out.println(updatedClass);
@@ -422,12 +418,10 @@ public class DoController {
     public String doDeleteClass(@ModelAttribute(value = "classID") int classID,
                                     @ModelAttribute(value = "usingTeacherToken") String usingTeacherToken,
                                     ModelMap modMap, HttpServletRequest request){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
         models.Class deletedClass = new models.Class().readByID(classID);
-        if(Objects.isNull(teacher) || teacher.getIsAdmin()!=1 && teacher.getTeacherID() != deletedClass.getTeacherID() ){
+        if (!this.testValidTeacherToken(usingTeacherToken) || !this.testTeacherIsAdmin(usingTeacherToken)){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
-            //System.out.println(deletedClass);
             if(deletedClass.delete()== 0){
                 modMap.put("message", "ERROR: Class delete failed!! Check the class info again");
             } 
@@ -439,9 +433,8 @@ public class DoController {
     public String createFeeForClass(@PathVariable(value = "classID") int classID, 
                                         @RequestHeader(value = "Teacher-Token") String usingTeacherToken,
                                         ModelMap modMap, HttpServletRequest request){
-        Teacher teacher = new Teacher().readByCol("Token", usingTeacherToken).get(0);
         models.Class processedlass = new models.Class().readByID(classID);
-        if(Objects.isNull(teacher) || teacher.getIsAdmin()!=1 && teacher.getTeacherID() != processedlass.getTeacherID() ){
+        if (!this.testValidTeacherToken(usingTeacherToken) || !this.testTeacherIsAdmin(usingTeacherToken)){
             modMap.put("message", "ERROR: This feature only work with the teachers who is admin, who have permission") ;
         } else {
             List<String> studentCodesInClass = processedlass.getListOfStudentCodes();
