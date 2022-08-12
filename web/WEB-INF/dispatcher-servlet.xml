@@ -10,9 +10,9 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
     <!-- NOTE 4-a:
-    I dont have much ideas about what this script do. Maybe it invoke a built-in-class instance for the Spring IoC
-                                                        for handling the Class which declared with annotation @Controller
-    But anyway, we don't need this line any more. It eventualy make an error on Spring framework version is >= 5.
+       The class org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping was deprecated in Spring 4,
+       then officially removed in Spring 5. 
+       By anyway, we don't need to assign a bean of HandlerMapping anymore, because the Spring 5 's IoC do it in default
     -->
     <!--<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>-->
 
